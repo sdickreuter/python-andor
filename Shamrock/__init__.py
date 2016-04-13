@@ -1,0 +1,1 @@
+from . spectrograph import Spectrograph
