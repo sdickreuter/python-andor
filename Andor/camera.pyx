@@ -71,23 +71,36 @@ class Camera:
         return width, height
 
     def _SetAcquisitionMode(self, mode):
-        error = lib.SetAcquisitionMode(mode)
+        cdef int m = mode
+        error = lib.SetAcquisitionMode(m)
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _SetReadMode(self, mode):
-        error = lib.SetReadMode(mode)
+        cdef int m = mode
+        error = lib.SetReadMode(m)
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _SetExposureTime(self,seconds):
-        error = lib.SetExposureTime(seconds)
+        cdef int s = seconds
+        error = lib.SetExposureTime(s)
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _SetImage(self, hbin, vbin, hstart, hend, vstart, vend):
-        error = lib.SetImage(hbin, vbin, hstart, hend, vstart, vend)
+        cdef int hb = hbin
+        cdef int vb = vbin
+        cdef int hs = hstart
+        cdef int he = hend
+        cdef int vs = vstart
+        cdef int ve = vend
+        error = lib.SetImage(hb, vb, hs, he, vs, ve)
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _SetShutter(self, typ, mode, closingtime, openingtime):
-        error = lib.SetShutter(typ, mode, closingtime, openingtime)
+        cdef int t = typ
+        cdef int m = mode
+        cdef int ct = closingtime
+        cdef int ot = openingtime
+        error = lib.SetShutter(t, m, ct, ot)
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _StartAcquisition(self):
