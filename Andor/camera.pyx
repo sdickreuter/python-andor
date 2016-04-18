@@ -133,11 +133,11 @@ class Camera:
         cdef unsigned int size = width*height
         #cdef np.ndarray[np.int, ndim=1, mode = 'c'] data = np.ascontiguousarray(np.zeros(size), dtype = np.int)
         #cdef int* data_ptr = <int*> data.data
-        cdef np.ndarray[np.int,mode="c"] data = np.zeros(size,dtype=np.int)
-        cdef int* data_ptr = &data[0]
+        #cdef np.ndarray[np.int,mode="c"] data = np.zeros(size,dtype=np.int)
+        #cdef int* data_ptr = &data[0]
         print(size)
-        #data = np.zeros(size, dtype=np.int)
-        #cdef int [:] cdata = data
-        #cdef int * cdata_ptr = &cdata
-        error = lib.GetAcquiredData(data_ptr, size)
+        data = np.zeros(size, dtype=np.int)
+        cdef int [:] cdata = data
+        cdef int * cdata_ptr = &cdata
+        error = lib.GetAcquiredData(cdata_ptr, size)
         return data
