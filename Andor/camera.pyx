@@ -63,9 +63,11 @@ class Camera:
 
         acquiring = True
         while acquiring:
-            if self._GetStatus() is 20073:
+            status = self._GetStatus()
+            print(status)
+            if status is 20073:
                 acquiring = False
-            time.sleep(0.01)
+            time.sleep(0.1)
 
         data = self._GetAcquiredData(self._width,self._height)
         return data
@@ -135,7 +137,7 @@ class Camera:
         cdef int status = 0
         cdef int* status_ptr = &status
         error = lib.GetStatus(status_ptr)
-        self.verbose(error, "_GetStatus")
+        #self.verbose(error, "_GetStatus")
         return status
 
     def _GetAcquiredData(self,width,height):
