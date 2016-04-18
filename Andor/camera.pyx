@@ -139,5 +139,5 @@ class Camera:
         data = np.zeros(size, dtype=np.int)
         cdef int [:] cdata = data
         cdef int * cdata_ptr = &cdata
-        error = lib.GetAcquiredData(cdata_ptr, size)
+        error = lib.GetAcquiredData(cdata, size)
         return data
