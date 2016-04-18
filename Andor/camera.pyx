@@ -134,6 +134,6 @@ class Camera:
         #cdef np.ndarray[np.int, ndim=1, mode = 'c'] data = np.ascontiguousarray(np.zeros(size), dtype = np.int)
         #cdef int* data_ptr = <int*> data.data
         cdef np.ndarray[np.int,mode="c"] data = np.zeros(size,dtype=np.int)
-        cdef int* data_ptr = &data.data[0]
+        cdef int* data_ptr = &data[0]
         error = lib.GetAcquiredData(data_ptr, size)
         return data
