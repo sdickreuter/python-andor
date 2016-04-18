@@ -61,8 +61,11 @@ class Camera:
     def TakeImage(self):
         self._StartAcquisition()
 
-        while self._GetStatus() is 20072:
-            time.sleep(0.001)
+        acquiring = True
+        while acquiring:
+            if self._GetStatus() is 20073:
+                acquiring = False
+            time.sleep(0.01)
 
         data = self._GetAcquiredData(self._width,self._height)
         return data
