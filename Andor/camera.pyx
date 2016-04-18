@@ -92,6 +92,7 @@ class Camera:
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _SetExposureTime(self,seconds):
+        seconds = float(seconds)
         cdef float s = seconds
         error = lib.SetExposureTime(s)
         self.verbose(error, sys._getframe().f_code.co_name)
