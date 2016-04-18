@@ -64,10 +64,9 @@ class Camera:
         acquiring = True
         while acquiring:
             status = self._GetStatus()
-            print(status)
             if status == 20073:
                 acquiring = False
-            time.sleep(0.1)
+            time.sleep(0.01)
 
         data = self._GetAcquiredData(self._width,self._height)
         return data
