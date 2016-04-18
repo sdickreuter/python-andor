@@ -62,7 +62,7 @@ class Camera:
         self._StartAcquisition()
 
         while self._GetStatus() is 20072:
-            time.sleep(0.000001)
+            time.sleep(0.001)
 
         data = self._GetAcquiredData(self._width,self._height)
         return data
