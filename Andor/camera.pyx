@@ -17,6 +17,11 @@ class Camera:
     def __init__(self):
         print("camera")
 
+
+    def __del__(self):
+        error = lib.ShutDown()
+        self.verbose(error, sys._getframe().f_code.co_name)
+
     def verbose(self, error, function=''):
         if self.verbosity > 0:
             if not error is 20002:
@@ -38,12 +43,13 @@ class Camera:
 
         #//Get Detector dimensions
         self._width, self._heigt = self._GetDetector()
+        print((self._width,self._height))
 
         #//Initialize Shutter
         self._SetShutter(1,0,50,50);
 
         #//Setup Image dimensions
-        self._SetImage(1,1,1,self._width,1,self._height);
+        self._SetImage(1,1,1,self._height,1,self._width);
 
     def TakeImage(self):
         self._StartAcquisition()
@@ -104,7 +110,7 @@ class Camera:
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _StartAcquisition(self):
-        error = lib.StartAcquistion()
+        error = lib.StartAcquisition()
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _GetNumberDevices(self):
