@@ -138,4 +138,4 @@ class Camera:
         cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
         print (data.data.as_ints[0])
         error = lib.GetAcquiredData(data.data.as_ints, size)
-        return np.array(data)
+        return np.array(data).reshape((width,height))
