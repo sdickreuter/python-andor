@@ -40,7 +40,7 @@ class Camera:
         self._SetAcquisitionMode(1);
 
         #//Set initial exposure time
-        self._SetExposureTime(0.1);
+        self._SetExposureTime(1);
 
         #//Get Detector dimensions
         self._width, self._height = self._GetDetector()
@@ -92,7 +92,7 @@ class Camera:
         self.verbose(error, sys._getframe().f_code.co_name)
 
     def _SetExposureTime(self,seconds):
-        cdef int s = seconds
+        cdef float s = seconds
         error = lib.SetExposureTime(s)
         self.verbose(error, sys._getframe().f_code.co_name)
 
