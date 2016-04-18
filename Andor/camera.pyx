@@ -63,7 +63,7 @@ class Camera:
             time.sleep(0.000001)
 
         data = self._GetAcquiredData(self._width,self._height)
-        print(data.shape)
+        return data
 
     def _Initialize(self):
         dir_bytes = self._init_path.encode('UTF-8')
@@ -134,8 +134,6 @@ class Camera:
 
     def _GetAcquiredData(self,width,height):
         cdef unsigned int size = width*height
-
         cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
-        print (data.data.as_ints[0])
         error = lib.GetAcquiredData(data.data.as_ints, size)
         return np.array(data).reshape((width,height))
