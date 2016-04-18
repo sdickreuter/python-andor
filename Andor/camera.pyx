@@ -25,7 +25,7 @@ class Camera:
                 print("[%s]: %s" % (function, ERROR_CODE[error]))
 
     def __del__(self):
-        lib._Shutdown()
+        self.Shutdown()
 
     def Initialize(self):
         self._Initialize()
@@ -51,7 +51,7 @@ class Camera:
 
     def Shutdown(self):
         error = lib.ShutDown()
-        self.verbose(error, sys._getframe().f_code.co_name)
+        #self.verbose(error, sys._getframe().f_code.co_name)
 
     def TakeImage(self):
         self._StartAcquisition()
