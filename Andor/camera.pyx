@@ -129,7 +129,7 @@ class Camera:
         self.verbose(error, sys._getframe().f_code.co_name)
         return status
 
-    def _GetAcquiredData(width,height,self):
+    def _GetAcquiredData(self,width,height):
         cdef unsigned int size = width*height
         cdef np.ndarray[np.int, ndim=1, mode = 'c'] data = np.ascontiguousarray(np.zeros(size), dtype = np.int)
         cdef int* data_ptr = <int*> data.data
