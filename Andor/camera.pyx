@@ -25,7 +25,7 @@ class Camera:
                 print("[%s]: %s" % (function, ERROR_CODE[error]))
 
     def __del__(self):
-        self.Shutdown()
+        lib._Shutdown()
 
     def Initialize(self):
         self._Initialize()
@@ -131,7 +131,7 @@ class Camera:
 
     def _GetAcquiredData(width,height,self):
         cdef int size = width*height
-        cdef np.ndarray[np.uint32_t, ndim=3, mode = 'c'] data = np.ascontiguousarray(np.zeros(size), dtype = np.int)
+        cdef np.ndarray[np.int32_t, ndim=1, mode = 'c'] data = np.ascontiguousarray(np.zeros(size), dtype = np.int)
         cdef int* data_ptr = <int*> data.data
         #cdef np.ndarray[int,mode="c"] data = np.zeros(size,dtype=int)
         #cdef int* data_ptr = &data[0]
