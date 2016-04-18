@@ -17,17 +17,15 @@ class Camera:
     def __init__(self):
         print("camera")
 
-
-    def __del__(self):
-        error = lib.ShutDown()
-        self.verbose(error, sys._getframe().f_code.co_name)
-
     def verbose(self, error, function=''):
         if self.verbosity > 0:
             if not error is 20002:
                 print("[%s]: %s" % (function, ERROR_CODE[error]))
             elif self.verbosity > 1:
                 print("[%s]: %s" % (function, ERROR_CODE[error]))
+
+    def __del__(self):
+        self.Shutdown()
 
     def Initialize(self):
         self._Initialize()
@@ -42,7 +40,7 @@ class Camera:
         self._SetExposureTime(0.1);
 
         #//Get Detector dimensions
-        self._width, self._heigt = self._GetDetector()
+        self._width, self._height = self._GetDetector()
         print((self._width,self._height))
 
         #//Initialize Shutter
@@ -50,6 +48,10 @@ class Camera:
 
         #//Setup Image dimensions
         self._SetImage(1,1,1,self._height,1,self._width);
+
+    def Shutdown(self):
+        error = lib.ShutDown()
+        self.verbose(error, sys._getframe().f_code.co_name)
 
     def TakeImage(self):
         self._StartAcquisition()
