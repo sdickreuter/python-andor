@@ -65,7 +65,7 @@ class Camera:
         while acquiring:
             status = self._GetStatus()
             print(status)
-            if status is 20073:
+            if status == 20073:
                 acquiring = False
             time.sleep(0.1)
 
