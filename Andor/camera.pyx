@@ -42,7 +42,7 @@ class Camera:
         self._SetExposureTime(0.1);
 
         #//Get Detector dimensions
-        self._width, self._heigt = self._GetDetector()
+        self._width, self._height = self._GetDetector()
         print((self._width,self._height))
 
         #//Initialize Shutter
