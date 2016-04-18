@@ -7,6 +7,9 @@ cimport atmcdLXd as lib
 import numpy as np
 cimport numpy as np
 
+from cpython cimport array
+import array
+
 class Camera:
 
     verbosity = 2
@@ -131,6 +134,8 @@ class Camera:
 
     def _GetAcquiredData(self,width,height):
         cdef unsigned int size = width*height
-        cdef int[] data
-        error = lib.GetAcquiredData(data, size)
+
+        cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
+        print (data.data.as_ints[0])
+        error = lib.GetAcquiredData(data.data.as_ints, size)
         return np.array(data)
