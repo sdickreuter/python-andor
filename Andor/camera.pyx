@@ -138,5 +138,6 @@ class Camera:
         print(size)
         data = np.zeros(size, dtype=np.int)
         cdef int [:] cdata = data
-        error = lib.GetAcquiredData(cdata, size)
+        cdef int * cdata_ptr = &cdata
+        error = lib.GetAcquiredData(cdata_ptr, size)
         return data
