@@ -33,6 +33,8 @@ class Camera:
     def Initialize(self):
         self._Initialize()
 
+        time.sleep(2)
+
         #//Set Read Mode to --Image--
         self._SetReadMode(4);
 
@@ -70,7 +72,7 @@ class Camera:
         cdef char* dir = dir_bytes
         error = lib.Initialize(dir)
         time.sleep(0.2)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_Initialize")
 
     def _GetDetector(self):
         cdef int width = 0
@@ -78,24 +80,24 @@ class Camera:
         cdef int height = 0
         cdef int* height_ptr = &height
         error = lib.GetDetector(width_ptr,height_ptr)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_GetDetector")
         return width, height
 
     def _SetAcquisitionMode(self, mode):
         cdef int m = mode
         error = lib.SetAcquisitionMode(m)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_SetAcquisitionMode")
 
     def _SetReadMode(self, mode):
         cdef int m = mode
         error = lib.SetReadMode(m)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_SetReadMode")
 
     def _SetExposureTime(self,seconds):
         seconds = float(seconds)
         cdef float s = seconds
         error = lib.SetExposureTime(s)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_SetExposureTime")
 
     def _SetImage(self, hbin, vbin, hstart, hend, vstart, vend):
         cdef int hb = hbin
@@ -105,7 +107,7 @@ class Camera:
         cdef int vs = vstart
         cdef int ve = vend
         error = lib.SetImage(hb, vb, hs, he, vs, ve)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_SetImage")
 
     def _SetShutter(self, typ, mode, closingtime, openingtime):
         cdef int t = typ
@@ -113,7 +115,7 @@ class Camera:
         cdef int ct = closingtime
         cdef int ot = openingtime
         error = lib.SetShutter(t, m, ct, ot)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_SetShutter")
 
     def _StartAcquisition(self):
         error = lib.StartAcquisition()
@@ -123,18 +125,19 @@ class Camera:
         cdef int num = -1
         cdef int* num_ptr = &num
         error = lib.GetNumberDevices(num_ptr)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_GetNumberDevices")
         print(num)
 
     def _GetStatus(self):
         cdef int status = 0
         cdef int* status_ptr = &status
         error = lib.GetStatus(status_ptr)
-        self.verbose(error, sys._getframe().f_code.co_name)
+        self.verbose(error, "_GetStatus")
         return status
 
     def _GetAcquiredData(self,width,height):
         cdef unsigned int size = width*height
         cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
         error = lib.GetAcquiredData(data.data.as_ints, size)
+        self.verbose(error, "_GetAcquiredData")
         return np.array(data).reshape((width,height))
