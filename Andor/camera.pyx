@@ -136,7 +136,7 @@ class Camera:
         #cdef np.ndarray[np.int,mode="c"] data = np.zeros(size,dtype=np.int)
         #cdef int* data_ptr = &data[0]
         print(size)
-        data = np.zeros(size, dtype=np.int)
+        data = np.zeros(size, dtype=np.int_t)
         cdef int [:] cdata = data
         cdef int * cdata_ptr = &cdata
         error = lib.GetAcquiredData(cdata, size)
