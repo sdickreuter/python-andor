@@ -131,10 +131,10 @@ class Camera:
 
     def _GetAcquiredData(self,width,height):
         cdef unsigned int size = width*height
-        cdef np.ndarray[np.int, ndim=1, mode = 'c'] data = np.ascontiguousarray(np.zeros(size), dtype = np.int)
-        cdef int* data_ptr = <int*> data.data
-        #cdef np.ndarray[np.int,mode="c"] data = np.zeros(size,dtype=np.int)
-        #cdef int* data_ptr = &data[0]
+        #cdef np.ndarray[np.int, ndim=1, mode = 'c'] data = np.ascontiguousarray(np.zeros(size), dtype = np.int)
+        #cdef int* data_ptr = <int*> data.data
+        cdef np.ndarray[np.int,mode="c"] data = np.zeros(size,dtype=np.int)
+        cdef int* data_ptr = &data[0]
         print(size)
         #data = np.zeros(size, dtype=np.int)
         #cdef int [:] cdata = data
