@@ -145,3 +145,12 @@ class Camera:
         error = lib.GetAcquiredData(data.data.as_ints, size)
         self.verbose(error, "_GetAcquiredData")
         return np.array(data).reshape((width,height))
+
+    def _GetPixelSize(self):
+        cdef float xSize = 0
+        cdef float* xSize_ptr = &xSize
+        cdef float ySize = 0
+        cdef float* ySize_ptr = &ySize
+        error = lib.GetPixelSize(xSize_ptr, ySize_ptr)
+        self.verbose(error, "_GetPixelSize")
+        return xSize, ySize
