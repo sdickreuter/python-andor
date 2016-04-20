@@ -121,7 +121,7 @@ class Spectrograph:
         #error = lib.ShamrockGetCalibration(self.device, waves, n)
         #waves_numpy = np.array(waves)
         cdef np.float32[:] waves = np.zeros(numberpixels, dtype=np.float32)
-        waves = input.view(np.float32_t)
+        waves = input.view(np.float32)
         error = lib.ShamrockGetCalibration(self.device, <float *>&waves, n)
         #print(waves_numpy[0])
         self.verbose(error, "_GetCalibration")
