@@ -24,7 +24,7 @@ class Spectrograph:
             RuntimeError("No Camera, aborting")
 
     def __del__(self):
-        self.ShamrockClose()
+        lib.ShamrockClose()
 
     def verbose(self, error, function=''):
         if self.verbosity > 0:
@@ -76,10 +76,11 @@ class Spectrograph:
         return n
 
     def _GetGratingInfo(self, grating):
+        #unsigned int ShamrockGetGratingInfo(int device,int Grating, float *Lines,  char* Blaze, int *Home, int *Offset)
         cdef int g = grating
         cdef float lines = 0
         cdef float* lines_ptr = &lines
-        cdef char* blaze = '     ' # 5 chars long !
+        cdef char* blaze = b'     ' # 5 chars long !
         cdef int home = 0
         cdef int* home_ptr = &home
         cdef int offset = 0
