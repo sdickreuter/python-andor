@@ -140,7 +140,7 @@ class Spectrograph:
     def _GetAutoSlitWidth(self, index):
         cdef int i = index
         cdef float w = 0
-        cdef float* w = &w
+        cdef float* w_ptr = &w
         error = lib.ShamrockSetAutoSlitWidth(self.device, i, w)
         self.verbose(error, "_GetAutoSlitWidth")
         return w
