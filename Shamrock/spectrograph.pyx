@@ -115,11 +115,13 @@ class Spectrograph:
     def _GetCalibration(self, numberpixels):
         cdef int n = numberpixels
         #cdef array.array values = array.array('f', np.zeros(numberpixels,dtype=np.float))
-        cdef float*  waves[n]
+        #cdef float*  waves[n]
+        cdef np.ndarray[float, ndim=1, mode="c"] waves_numpy = np.empty(numberpixels)
+        cdef float *waves = &waves_numpy[0]
         error = lib.ShamrockGetCalibration(self.device, waves, n)
-        print(waves[0])
+        print(waves_numpy[0])
         self.verbose(error, "_GetCalibration")
-        return np.array(waves)
+        return waves_numpy
 
     def _SetFlipperMirrorPosition(self, flipper, position):
         cdef int f = flipper
