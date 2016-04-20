@@ -96,7 +96,7 @@ class Spectrograph:
     def _GetWavelength(self):
         cdef float wl = 0
         cdef float* wl_ptr = &wl
-        error = lib.ShamrockSetWavelength(self.device, wl_ptr)
+        error = lib.ShamrockGetWavelength(self.device, wl_ptr)
         self.verbose(error, "_GetWavelength")
         return wl
 
@@ -113,7 +113,7 @@ class Spectrograph:
     def _GetCalibration(self, numberpixels):
         cdef int n = numberpixels
         cdef array.array values = array.array('i', np.zeros(numberpixels,dtype=np.int))
-        error = lib.ShamrockGetCalibration(self.device, values.data, n)
+        error = lib.ShamrockGetCalibration(self.device, values.data.as_floats, n)
         self.verbose(error, "_GetCalibration")
         return np.array(values)
 
