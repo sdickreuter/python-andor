@@ -114,7 +114,7 @@ class Spectrograph:
 
     def _GetCalibration(self, numberpixels):
         cdef int n = numberpixels
-        cdef array.array values = array.array('i', np.zeros(numberpixels,dtype=np.int))
+        cdef array.array values = array.array('f', np.zeros(numberpixels,dtype=np.float))
         error = lib.ShamrockGetCalibration(self.device, values.data.as_floats, n)
         self.verbose(error, "_GetCalibration")
         return np.array(values)
