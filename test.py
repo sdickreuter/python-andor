@@ -6,6 +6,6 @@ import Shamrock
 cam = Andor.Camera()
 cam.Initialize()
 
-spec = Shamrock.Spectrograph()
+spec = Shamrock.Spectrograph(cam)
 spec._Initialize()
 

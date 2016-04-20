@@ -80,7 +80,8 @@ class Spectrograph:
         cdef int g = grating
         cdef float lines = 0
         cdef float* lines_ptr = &lines
-        cdef char* blaze = b'     ' # 5 chars long !
+        blaze_bytes = '     '.encode('UTF-8') # 5 chars long !
+        cdef char* blaze = blaze_bytes
         cdef int home = 0
         cdef int* home_ptr = &home
         cdef int offset = 0
