@@ -64,7 +64,7 @@ class Spectrograph:
     def _GetGrating(self):
         cdef int grating = 0
         cdef int* grating_ptr = &grating
-        error = lib.ShamrockGetGrating(self.device, g)
+        error = lib.ShamrockGetGrating(self.device, grating)
         self.verbose(error, "_GetGrating")
         return grating
 
