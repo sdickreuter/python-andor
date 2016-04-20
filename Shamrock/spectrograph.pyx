@@ -52,7 +52,7 @@ class Spectrograph:
         self.verbose(error, "_SetPixelWidth")
 
     def _SetNumberPixels(self,pixelnumber):
-        cdef float n = pixelnumber
+        cdef int n = pixelnumber
         error = lib.ShamrockSetNumberPixels(self.device, n)
         self.verbose(error, "_SetNumberPixels")
 
@@ -64,7 +64,7 @@ class Spectrograph:
     def _GetGrating(self):
         cdef int grating = 0
         cdef int* grating_ptr = &grating
-        error = lib.ShamrockGetGrating(self.device, grating)
+        error = lib.ShamrockGetGrating(self.device, grating_ptr)
         self.verbose(error, "_GetGrating")
         return grating
 
@@ -84,7 +84,7 @@ class Spectrograph:
         cdef int* home_ptr = &home
         cdef int offset = 0
         cdef int* offset_ptr = &offset
-        error = lib.ShamrockGetGratingInfo(self.device, g, lines, blaze, home, offset)
+        error = lib.ShamrockGetGratingInfo(self.device, g, lines_ptr, blaze, home_ptr, offset_ptr)
         self.verbose(error, "_GetNumberGratings")
         return lines, blaze, home, offset
 
