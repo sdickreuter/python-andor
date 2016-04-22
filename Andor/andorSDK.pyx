@@ -10,12 +10,10 @@ cimport numpy as np
 from cpython cimport array
 import array
 
-class Camera:
+class AndorSDK:
 
     verbosity = 2
     _init_path = '/usr/local/etc/andor'
-    _width = 0
-    _height = 0
 
     def __init__(self):
         print("camera")
@@ -30,55 +28,31 @@ class Camera:
     def __del__(self):
         self.Shutdown()
 
-    def Initialize(self):
-        self._Initialize()
-
-        time.sleep(2)
-
-        #//Set Read Mode to --Image--
-        self._SetReadMode(4);
-
-        #//Set Acquisition mode to --Single scan--
-        self._SetAcquisitionMode(1);
-
-        #//Set initial exposure time
-        self._SetExposureTime(1);
-
-        #//Get Detector dimensions
-        self._width, self._height = self._GetDetector()
-        print((self._width,self._height))
-
-        #//Initialize Shutter
-        self._SetShutter(1,0,50,50);
-
-        #//Setup Image dimensions
-        self._SetImage(1,1,1,self._width,1,self._height);
-
     def Shutdown(self):
         error = lib.ShutDown()
         #self.verbose(error, sys._getframe().f_code.co_name)
 
     def TakeImage(self):
-        self._StartAcquisition()
+        self.StartAcquisition()
 
         acquiring = True
         while acquiring:
-            status = self._GetStatus()
+            status = self.GetStatus()
             if status == 20073:
                 acquiring = False
             time.sleep(0.01)
 
-        data = self._GetAcquiredData(self._width,self._height)
+        data = self.GetAcquiredData(self._width, self._height)
         return data
 
-    def _Initialize(self):
+    def Initialize(self):
         dir_bytes = self.init_path.encode('UTF-8')
         cdef char* dir = dir_bytes
         error = lib.Initialize(dir)
         time.sleep(0.2)
         self.verbose(error, "_Initialize")
 
-    def _GetDetector(self):
+    def GetDetector(self):
         cdef int width = 0
         cdef int* width_ptr = &width
         cdef int height = 0
@@ -87,23 +61,23 @@ class Camera:
         self.verbose(error, "_GetDetector")
         return width, height
 
-    def _SetAcquisitionMode(self, mode):
+    def SetAcquisitionMode(self, mode):
         cdef int m = mode
         error = lib.SetAcquisitionMode(m)
         self.verbose(error, "_SetAcquisitionMode")
 
-    def _SetReadMode(self, mode):
+    def SetReadMode(self, mode):
         cdef int m = mode
         error = lib.SetReadMode(m)
         self.verbose(error, "_SetReadMode")
 
-    def _SetExposureTime(self,seconds):
+    def SetExposureTime(self, seconds):
         seconds = float(seconds)
         cdef float s = seconds
         error = lib.SetExposureTime(s)
         self.verbose(error, "_SetExposureTime")
 
-    def _SetImage(self, hbin, vbin, hstart, hend, vstart, vend):
+    def SetImage(self, hbin, vbin, hstart, hend, vstart, vend):
         cdef int hb = hbin
         cdef int vb = vbin
         cdef int hs = hstart
@@ -113,7 +87,7 @@ class Camera:
         error = lib.SetImage(hb, vb, hs, he, vs, ve)
         self.verbose(error, "_SetImage")
 
-    def _SetShutter(self, typ, mode, closingtime, openingtime):
+    def SetShutter(self, typ, mode, closingtime, openingtime):
         cdef int t = typ
         cdef int m = mode
         cdef int ct = closingtime
@@ -121,32 +95,32 @@ class Camera:
         error = lib.SetShutter(t, m, ct, ot)
         self.verbose(error, "_SetShutter")
 
-    def _StartAcquisition(self):
+    def StartAcquisition(self):
         error = lib.StartAcquisition()
         self.verbose(error, sys._getframe().f_code.co_name)
 
-    def _GetNumberDevices(self):
+    def GetNumberDevices(self):
         cdef int num = -1
         cdef int* num_ptr = &num
         error = lib.GetNumberDevices(num_ptr)
         self.verbose(error, "_GetNumberDevices")
         print(num)
 
-    def _GetStatus(self):
+    def GetStatus(self):
         cdef int status = 0
         cdef int* status_ptr = &status
         error = lib.GetStatus(status_ptr)
         #self.verbose(error, "_GetStatus")
         return status
 
-    def _GetAcquiredData(self,width,height):
+    def GetAcquiredData(self, width, height):
         cdef unsigned int size = width*height
         cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
         error = lib.GetAcquiredData(data.data.as_ints, size)
         self.verbose(error, "_GetAcquiredData")
         return np.array(data).reshape((width,height))
 
-    def _GetPixelSize(self):
+    def GetPixelSize(self):
         cdef float xSize = 0
         cdef float* xSize_ptr = &xSize
         cdef float ySize = 0
