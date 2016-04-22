@@ -15,7 +15,7 @@ extensions = cythonize([
 setup(
   name = 'Andor',
   cmdclass = {'build_ext': build_ext},
-  packages=['Andor','Shamrock'],
+  packages=['Andor','Shamrock','AndorSpectrometer'],
   ext_modules = extensions
 )
 

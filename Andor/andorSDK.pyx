@@ -32,19 +32,6 @@ class AndorSDK:
         error = lib.ShutDown()
         #self.verbose(error, sys._getframe().f_code.co_name)
 
-    def TakeImage(self):
-        self.StartAcquisition()
-
-        acquiring = True
-        while acquiring:
-            status = self.GetStatus()
-            if status == 20073:
-                acquiring = False
-            time.sleep(0.01)
-
-        data = self.GetAcquiredData(self._width, self._height)
-        return data
-
     def Initialize(self):
         dir_bytes = self.init_path.encode('UTF-8')
         cdef char* dir = dir_bytes

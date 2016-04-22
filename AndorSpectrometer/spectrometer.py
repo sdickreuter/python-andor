@@ -56,3 +56,47 @@ class Spectrometer:
         self.cam = None
         self.spec = None
 
+    def TakeImage(self):
+        self.cam.StartAcquisition()
+
+        acquiring = True
+        while acquiring:
+            status = self.cam.GetStatus()
+            if status == 20073:
+                acquiring = False
+            time.sleep(0.01)
+
+        data = self.cam.GetAcquiredData(self._width, self._height)
+        return data
+
+    def SetCentreWavelength(self,wavelength):
+
+        minwl, maxwl = self.spec.GetWavelengthLimits()
+
+        if wavelength < maxwl & wavelength > minwl:
+            self.spec.SetWavelength(wavelength)
+        else:
+            pass
+
+
+    def TakeImageofSlit(self, reset = False):
+        #get inital settings
+        if reset:
+            wavelength = self.spec.GetWavelength()
+            slit = self.spec.GetAutoSlitWidth(0)
+
+        self.cam.SetImage(1, 1, 1, self.width, 1, self.height);
+
+        self.spec.SetWavelength(0)
+        self.spec.SetAutoSlitWidth(0, 2500) #TODO: check unit of slit width !
+
+        data = self.TakeImage()
+
+        # return to old settings
+        if reset:
+            self.spec.SetWavelength(wavelength)
+            self.spec.SetAutoSlitWidth(slit)
+            self.cam.SetImage(1, 1, 1, self.width, 1, self.height);
+
+
+        return data
