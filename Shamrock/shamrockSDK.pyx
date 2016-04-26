@@ -16,7 +16,8 @@ class ShamrockSDK:
     init_path = '/usr/local/etc/andor'
     device = 0
 
-    def __init__(self):
+    def __init__(self, device = 0):
+        self.device = device
         print("spectrograph")
 
     def __del__(self):
