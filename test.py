@@ -1,11 +1,12 @@
 
 import numpy as np
-import Andor
-import Shamrock
+import matplotlib.pyplot as plt
+import AndorSpectrometer
 
-cam = Andor.Camera()
-cam.Initialize()
+spec = AndorSpectrometer.Spectrometer()
 
-spec = Shamrock.Spectrograph(cam)
-spec.Initialize()
+data = spec.TakeImageofSlit()
+
+plt.imshow(data)
+plt.show()
 

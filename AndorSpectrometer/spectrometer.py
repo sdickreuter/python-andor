@@ -22,6 +22,9 @@ class Spectrometer:
 
         time.sleep(2)
 
+        self.cam.SetTemperatur(-15)
+        self.cam.CoolerON()
+
         # //Set Read Mode to --Image--
         self.cam.SetReadMode(4);
 
@@ -59,11 +62,10 @@ class Spectrometer:
 
     def TakeFullImage(self):
         self.cam.SetImage(1, 1, 1, self._width, 1, self._height)
-        self.cam.StartAcquisition()
-        data = self.cam.GetAcquiredData(self._width, self._height)
-        return data.transpose()
+        return self.TakeImage(self._width, self._height)
 
     def TakeImage(self, width, height):
+        self.cam.SetReadMode(4);
         self.cam.StartAcquisition()
 
         acquiring = True

@@ -4,6 +4,9 @@ It has three Classes:
 * ShamrockSDK() for direct acces to the Shamrock SDK functions
 * Spectrometer() wrapps SDK functions for both camera and spectrograph
 
+
+
+
 Usage Example:
 ```
 import AndorSpectrometer
