@@ -57,7 +57,7 @@ class Spectrometer:
         self.cam = None
         self.spec = None
 
-    def TakeFullImage(self)
+    def TakeFullImage(self):
         self.cam.SetImage(1, 1, 1, self._width, 1, self._height)
         self.cam.StartAcquisition()
         data = self.cam.GetAcquiredData(self._width, self._height)
