@@ -84,7 +84,7 @@ class Spectrometer:
         #get inital settings
         if reset:
             wavelength = self.spec.GetWavelength()
-            slit = self.spec.GetAutoSlitWidth(0)
+            slit = self.spec.GetAutoSlitWidth(1)
 
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
         visible_xpixels = (self._max_slit_width*1000)/self._pixelwidth
@@ -95,7 +95,7 @@ class Spectrometer:
         self.cam.SetImage(1, 1, min_width, max_width, 1, self._height);
 
         self.spec.SetWavelength(0)
-        self.spec.SetAutoSlitWidth(0, self._max_slit_width)
+        self.spec.SetAutoSlitWidth(1, self._max_slit_width)
 
         data = self.TakeImage()
 
