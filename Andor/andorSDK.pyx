@@ -96,6 +96,7 @@ class AndorSDK:
             error = lib.StartAcquisition()
             self.verbose(error, "StartAcquisition")
         else:
+            print("[StartAcquisition]: not idle !")
             self.verbose(20992, "StartAcquisition")
 
     def GetNumberDevices(self):
@@ -164,5 +165,5 @@ class AndorSDK:
 
     def CoolerOFF(self):
         error = lib.CoolerOFF()
-        self.verbose(error, "CoolerON")
+        self.verbose(error, "CoolerOFF")
 
