@@ -150,7 +150,7 @@ class ShamrockSDK:
         cdef int i = index
         cdef float w = 0
         cdef float* w_ptr = &w
-        error = lib.ShamrockSetAutoSlitWidth(self.device, i, w_ptr)
+        error = lib.ShamrockGetAutoSlitWidth(self.device, i, w_ptr)
         self.verbose(error, "_GetAutoSlitWidth")
         return w
 
