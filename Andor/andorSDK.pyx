@@ -91,7 +91,7 @@ class AndorSDK:
         self.verbose(error, "SetShutter")
 
     def StartAcquisition(self):
-        status = lib.GetStatus()
+        status = self.GetStatus()
         if status is 20073: # 20073: 'DRV_IDLE'
             error = lib.StartAcquisition()
             self.verbose(error, "StartAcquisition")
