@@ -61,7 +61,7 @@ class Spectrometer:
         self.cam.SetImage(1, 1, 1, self._width, 1, self._height)
         self.cam.StartAcquisition()
         data = self.cam.GetAcquiredData(self._width, self._height)
-        return data
+        return data.transpose()
 
     def TakeImage(self, width, height):
         self.cam.StartAcquisition()
@@ -73,7 +73,7 @@ class Spectrometer:
                 acquiring = False
             time.sleep(0.01)
         data = self.cam.GetAcquiredData(width, height)
-        return data
+        return data.transpose()
 
     def SetCentreWavelength(self,wavelength):
 
@@ -95,6 +95,15 @@ class Spectrometer:
         visible_xpixels = (self._max_slit_width)/self._pixelwidth
         min_width = round(self._width/2-visible_xpixels/2)
         max_width = self._width-min_width
+
+        min_width -= 20
+        max_width += 20
+
+        if min_width < 1 :
+            min_width = 1
+        if max_width > self._width:
+            max_width = self._width
+
         print((min_width,max_width))
 
         self.cam.SetImage(1, 1, min_width, max_width, 1, self._height);
@@ -102,7 +111,7 @@ class Spectrometer:
         self.spec.SetWavelength(0)
         self.spec.SetAutoSlitWidth(1, self._max_slit_width)
 
-        data = self.TakeImage(max_width-min_width,self._height)
+        data = self.TakeImage(max_width-min_width+1,self._height)
 
         # return to old settings
         if reset:
@@ -110,7 +119,7 @@ class Spectrometer:
             self.spec.SetAutoSlitWidth(slit)
             self.cam.SetImage(1, 1, 1, self._width, 1, self._height);
 
-        return data
+        return data.transpose()
 
 
     def TakeSpectrum(self):
