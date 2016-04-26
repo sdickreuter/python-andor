@@ -33,7 +33,7 @@ class AndorSDK:
         #self.verbose(error, sys._getframe().f_code.co_name)
 
     def Initialize(self):
-        dir_bytes = self.init_path.encode('UTF-8')
+        dir_bytes = self._init_path.encode('UTF-8')
         cdef char* dir = dir_bytes
         error = lib.Initialize(dir)
         time.sleep(0.2)
