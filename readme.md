@@ -1,12 +1,16 @@
 This is a package for using the linux Andor SDK with python.
+It has three Classes:
+* AndorSDK() for direct access to the Andor SDK functions
+* ShamrockSDK() for direct acces to the Shamrock SDK functions
+* Spectrometer() wrapps SDK functions for both camera and spectrograph
 
 Usage Example:
 ```
-import Andor
+import AndorSpectrometer
 import numpy as np
 
-cam = Andor.Camera()
-cam.Initialize()
-data = cam.TakeImage()
+spec = AndorSpectrometer.Spectrometer()
+pic = spec.TakeImage()
+...
 
 ```
