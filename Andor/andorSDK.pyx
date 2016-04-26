@@ -164,5 +164,5 @@ class AndorSDK:
 
     def CoolerOFF(self):
         error = lib.CoolerOFF()
-        self.verbose(error, "CoolerON")
+        self.verbose(error, "CoolerOFF")
 
