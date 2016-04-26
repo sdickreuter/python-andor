@@ -29,7 +29,7 @@ class Spectrometer:
         self.cam.SetAcquisitionMode(1);
 
         # //Set initial exposure time
-        self.cam.SetExposureTime(1);
+        self.cam.SetExposureTime(10);
 
         # //Get Detector dimensions
         self._width, self._height = self.cam.GetDetector()
@@ -87,7 +87,7 @@ class Spectrometer:
             slit = self.spec.GetAutoSlitWidth(0)
 
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
-        visible_xpixels = self._max_slit_width/self._pixelwidth
+        visible_xpixels = (self._max_slit_width*1000)/self._pixelwidth
         min_width = round(self._width/2-visible_xpixels/2)
         max_width = self._width-min_width
         print((min_width,max_width))
