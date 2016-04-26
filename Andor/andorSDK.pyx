@@ -91,13 +91,16 @@ class AndorSDK:
         self.verbose(error, "SetShutter")
 
     def StartAcquisition(self):
-        status = self.GetStatus()
-        if status == 20073: # 20073: 'DRV_IDLE'
-            error = lib.StartAcquisition()
-            self.verbose(error, "StartAcquisition")
-        else:
-            print("[StartAcquisition]: not idle !")
-            self.verbose(20992, "StartAcquisition")
+        #status = self.GetStatus()
+        #if status == 20073: # 20073: 'DRV_IDLE'
+        #    error = lib.StartAcquisition()
+        #    self.verbose(error, "StartAcquisition")
+        #else:
+        #    print("[StartAcquisition]: not idle !")
+        #    self.verbose(20992, "StartAcquisition")
+        error = lib.StartAcquisition()
+        self.verbose(error, "StartAcquisition")
+
 
     def GetNumberDevices(self):
         cdef int num = -1
