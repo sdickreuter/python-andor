@@ -5,9 +5,9 @@ from Cython.Distutils import build_ext
 
 
 extensions = cythonize([
-    Extension("Andor.camera", ["Andor/andorSDK.pyx","Andor/atmcdLXd.pxd"],
+    Extension("Andor.andorSDK", ["Andor/andorSDK.pyx","Andor/atmcdLXd.pxd"],
               libraries = ['andor']),
-    Extension("Shamrock.spectrograph", ["Shamrock/shamrockSDK.pyx", "Shamrock/ShamrockCIF.pxd"],
+    Extension("Shamrock.shamrockSDK", ["Shamrock/shamrockSDK.pyx", "Shamrock/ShamrockCIF.pxd"],
               libraries=['shamrockcif'])
     ])
 
