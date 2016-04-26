@@ -1,1 +1,1 @@
-from . spectrograph import Spectrograph
+from . shamrockSDK import ShamrockSDK

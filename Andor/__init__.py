@@ -1,1 +1,1 @@
-from . camera import Camera
+from . andorSDK import AndorSDK
