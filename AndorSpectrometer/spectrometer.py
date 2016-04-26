@@ -95,6 +95,15 @@ class Spectrometer:
         visible_xpixels = (self._max_slit_width)/self._pixelwidth
         min_width = round(self._width/2-visible_xpixels/2)
         max_width = self._width-min_width
+
+        min_width -= 20
+        max_width += 20
+
+        if min_width < 1 :
+            min_width = 1
+        if max_width > self._width:
+            max_width = self._width
+
         print((min_width,max_width))
 
         self.cam.SetImage(1, 1, min_width, max_width, 1, self._height);
@@ -102,7 +111,7 @@ class Spectrometer:
         self.spec.SetWavelength(0)
         self.spec.SetAutoSlitWidth(1, self._max_slit_width)
 
-        data = self.TakeImage(max_width-min_width,self._height)
+        data = self.TakeImage(max_width-min_width+1,self._height)
 
         # return to old settings
         if reset:
