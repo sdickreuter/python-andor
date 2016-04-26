@@ -42,7 +42,7 @@ class Spectrometer:
         self.cam.SetShutter(1, 0, 50, 50);
 
         # //Setup Image dimensions
-        self.cam.SetImage(1, 1, 1, self._width, 1, self._height);
+        self.cam.SetImage(1, 1, 1, self._width, 1, self._height)
 
         self.spec = ShamrockSDK()
 
@@ -57,7 +57,13 @@ class Spectrometer:
         self.cam = None
         self.spec = None
 
-    def TakeImage(self):
+    def TakeFullImage(self)
+        self.cam.SetImage(1, 1, 1, self._width, 1, self._height)
+        self.cam.StartAcquisition()
+        data = self.cam.GetAcquiredData(self._width, self._height)
+        return data
+
+    def TakeImage(self, width, height):
         self.cam.StartAcquisition()
 
         acquiring = True
@@ -66,8 +72,7 @@ class Spectrometer:
             if status == 20073:
                 acquiring = False
             time.sleep(0.01)
-
-        data = self.cam.GetAcquiredData(self._width, self._height)
+        data = self.cam.GetAcquiredData(width, height)
         return data
 
     def SetCentreWavelength(self,wavelength):
@@ -97,7 +102,7 @@ class Spectrometer:
         self.spec.SetWavelength(0)
         self.spec.SetAutoSlitWidth(1, self._max_slit_width)
 
-        data = self.TakeImage()
+        data = self.TakeImage(max_width-min_width,self._height)
 
         # return to old settings
         if reset:
