@@ -92,7 +92,7 @@ class AndorSDK:
 
     def StartAcquisition(self):
         status = self.GetStatus()
-        if status is 20073: # 20073: 'DRV_IDLE'
+        if status == 20073: # 20073: 'DRV_IDLE'
             error = lib.StartAcquisition()
             self.verbose(error, "StartAcquisition")
         else:
