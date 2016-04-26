@@ -144,7 +144,6 @@ class AndorSDK:
         self.verbose(error, "GetTemperature")
         return temp
 
-
     def GetTemperatureRange(self):
         cdef int min_temp = 0
         cdef int* min_temp_ptr = &min_temp
@@ -154,9 +153,9 @@ class AndorSDK:
         self.verbose(error, "GetTemperatureRange")
         return min_temp, max_temp
 
-    def SetTemperatur(self, temperature):
+    def SetTemperature(self, temperature):
         cdef int temp = temperature
-        error = lib.SetTemperatur(temp)
+        error = lib.SetTemperature(temp)
         self.verbose(error, "SetTemperatur")
 
     def CoolerON(self):

@@ -22,7 +22,7 @@ class Spectrometer:
 
         time.sleep(2)
 
-        self.cam.SetTemperatur(-15)
+        self.cam.SetTemperature(-15)
         self.cam.CoolerON()
 
         # //Set Read Mode to --Image--
