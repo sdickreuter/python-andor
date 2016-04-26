@@ -119,7 +119,7 @@ class ShamrockSDK:
         #cdef float[:] waves = np.zeros(numberpixels, dtype=np.float32)
         #error = lib.ShamrockGetCalibration(self.device, <float *>&waves, n)
         cdef array.array waves = array.array('f', np.zeros(numberpixels,dtype=np.float32))
-        error = lib.ShamrockGetCalibration(waves.data.as_floats, numberpixels)
+        error = lib.ShamrockGetCalibration(self.device, waves.data.as_floats, numberpixels)
 
         #print(waves_numpy[0])
         self.verbose(error, "_GetCalibration")

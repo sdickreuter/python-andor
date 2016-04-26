@@ -109,3 +109,4 @@ class Spectrometer:
 
 
     def TakeSpectrum(self):
+        pass
