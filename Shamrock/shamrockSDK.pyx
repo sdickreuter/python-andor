@@ -140,7 +140,7 @@ class ShamrockSDK:
         self.verbose(error, "_GetFlipperMirrorPosition")
         return pos
 
-    def SetAutoSlitWidth(self, index, width):
+    def SetAutoSlitWidth(self, index, width): # width in um !
         cdef int i = index
         cdef float w = width
         error = lib.ShamrockSetAutoSlitWidth(self.device, i, w)
@@ -152,6 +152,6 @@ class ShamrockSDK:
         cdef float* w_ptr = &w
         error = lib.ShamrockGetAutoSlitWidth(self.device, i, w_ptr)
         self.verbose(error, "_GetAutoSlitWidth")
-        return w
+        return w # w in um !
 
 

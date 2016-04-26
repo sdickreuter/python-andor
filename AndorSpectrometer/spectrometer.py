@@ -8,7 +8,7 @@ from Shamrock.shamrockSDK import ShamrockSDK
 class Spectrometer:
 
     verbosity = 2
-    _max_slit_width = 2.5 # maximal width of slit in mm
+    _max_slit_width = 2500 # maximal width of slit in um
     cam = None
     spec = None
 
@@ -87,7 +87,7 @@ class Spectrometer:
             slit = self.spec.GetAutoSlitWidth(1)
 
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
-        visible_xpixels = (self._max_slit_width*1000)/self._pixelwidth
+        visible_xpixels = (self._max_slit_width)/self._pixelwidth
         min_width = round(self._width/2-visible_xpixels/2)
         max_width = self._width-min_width
         print((min_width,max_width))
