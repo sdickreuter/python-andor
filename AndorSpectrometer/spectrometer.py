@@ -98,8 +98,8 @@ class Spectrometer:
         min_width = round(self._width/2-visible_xpixels/2)
         max_width = self._width-min_width
 
-        min_width -= 20
-        max_width += 20
+        #min_width -= 20
+        #max_width += 20
 
         if min_width < 1 :
             min_width = 1
