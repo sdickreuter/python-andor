@@ -5,8 +5,6 @@ It has three Classes:
 * Spectrometer() wrapps SDK functions for both camera and spectrograph
 
 
-
-
 Usage Example:
 ```
 import AndorSpectrometer
@@ -15,5 +13,23 @@ import numpy as np
 spec = AndorSpectrometer.Spectrometer()
 pic = spec.TakeImage()
 ...
+
+```
+
+**Important:**
+When you use the TEC Cooler with temperatures below -20°C your programm has to make sure that the
+TEC is only switched off when the temperature is above -20°C, and not earlier.
+So you have to call spec.cam.Shutdown() if anythin goes wrong, this will let the TEC-Controller slowly
+increase the temperature until the detector is warm enough.
+For example you can us a try finnally block:
+```
+import AndorSpectrometer
+
+try:
+    spec= AndorSpectrometer.Spectrometer()
+    ...
+    ...
+finally:
+    AndorSpectrometer.andor.Shutdown()
 
 ```
