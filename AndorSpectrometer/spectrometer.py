@@ -21,6 +21,10 @@ class Spectrometer:
         time.sleep(2)
         shamrock_initialized = shamrock.Initialize()
 
+        self._wl = None
+        self._hstart = 100
+        self._hstop = 110
+
         if andor_initialized and shamrock_initialized:
 
             andor.SetTemperature(-15)
@@ -54,20 +58,27 @@ class Spectrometer:
 
             shamrock.SetPixelWidth(self._pixelwidth)
 
+            self.setCentreWavelength(0.0)
+
         else:
             raise RuntimeError("Could not initialize Spectrometer")
 
 
     def __del__(self):
-        andor = None
-        shamrock = None
+        andor.Shutdown()
+        shamrock.Shutdown()
+        #andor = None
+        #shamrock = None
+
+    def GetWavelength(self):
+        return self._wl
 
     def TakeFullImage(self):
         andor.SetImage(1, 1, 1, self._width, 1, self._height)
         return self.TakeImage(self._width, self._height)
 
     def TakeImage(self, width, height):
-        andor.SetReadMode(4);
+        andor.SetReadMode(4)
         andor.StartAcquisition()
 
         acquiring = True
@@ -85,6 +96,7 @@ class Spectrometer:
 
         if wavelength < maxwl & wavelength > minwl:
             shamrock.SetWavelength(wavelength)
+            self._wl = shamrock.GetCalibration(self._width)
         else:
             pass
 
@@ -127,9 +139,21 @@ class Spectrometer:
 
 
     def SetSingleTrack(self,hstart,hstop):
-
+        self._hstart = hstart
+        self._hstop = hstop
         andor.SetImage(1, 1, 1, self._width, hstart, hstop);
 
 
-    def TakeSpectrum(self):
-        pass
+    def TakeSingleTrack(self):
+        andor.SetReadMode(4)
+        andor.StartAcquisition()
+
+        acquiring = True
+        while acquiring:
+            status = andor.GetStatus()
+            if status == 20073:
+                acquiring = False
+            time.sleep(0.01)
+        data = andor.GetAcquiredData(self._width, (self._hstop-self._hstart)+1 )
+        data = np.mean(data,0)
+        return data.transpose()
