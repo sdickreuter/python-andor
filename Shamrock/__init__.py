@@ -1,1 +1,1 @@
-from . shamrockSDK import ShamrockSDK
+from . shamrockSDK import *

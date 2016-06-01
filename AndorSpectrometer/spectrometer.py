@@ -2,8 +2,8 @@
 import numpy as np
 import time
 
-from Andor.andorSDK import AndorSDK
-from Shamrock.shamrockSDK import ShamrockSDK
+import Andor.andorSDK as andor
+import Shamrock.shamrockSDK as shamrock
 
 class Spectrometer:
 
@@ -15,74 +15,76 @@ class Spectrometer:
 
     def __init__(self, verbosity = 2):
         self.verbosity = verbosity
+        andor.verbosity = self.verbosity
 
-        self.cam = AndorSDK()
-        self.cam.verbosity = self.verbosity
-        self.cam.Initialize()
-
+        andor_initialized = andor.Initialize()
         time.sleep(2)
+        shamrock_initialized = shamrock.Initialize()
 
-        self.cam.SetTemperature(-15)
-        self.cam.CoolerON()
+        if andor_initialized and shamrock_initialized:
 
-        # //Set Read Mode to --Image--
-        self.cam.SetReadMode(4);
+            andor.SetTemperature(-15)
+            andor.CoolerON()
 
-        # //Set Acquisition mode to --Single scan--
-        self.cam.SetAcquisitionMode(1);
+            # //Set Read Mode to --Image--
+            andor.SetReadMode(4);
 
-        # //Set initial exposure time
-        self.cam.SetExposureTime(10);
+            # //Set Acquisition mode to --Single scan--
+            andor.SetAcquisitionMode(1);
 
-        # //Get Detector dimensions
-        self._width, self._height = self.cam.GetDetector()
-        print((self._width, self._height))
+            # //Set initial exposure time
+            andor.SetExposureTime(10);
 
-        # Get Size of Pixels
-        self._pixelwidth, self._pixelheight = self.cam.GetPixelSize()
+            # //Get Detector dimensions
+            self._width, self._height = andor.GetDetector()
+            print((self._width, self._height))
 
-        # //Initialize Shutter
-        self.cam.SetShutter(1, 0, 50, 50);
+            # Get Size of Pixels
+            self._pixelwidth, self._pixelheight = andor.GetPixelSize()
 
-        # //Setup Image dimensions
-        self.cam.SetImage(1, 1, 1, self._width, 1, self._height)
+            # //Initialize Shutter
+            #andor.SetShutter(1, 0, 50, 50);
 
-        self.spec = ShamrockSDK()
+            # //Setup Image dimensions
+            andor.SetImage(1, 1, 1, self._width, 1, self._height)
 
-        self.spec.Initialize()
+            #shamrock = ShamrockSDK()
 
-        self.spec.SetNumberPixels(self._width)
+            shamrock.SetNumberPixels(self._width)
 
-        self.spec.SetPixelWidth(self._pixelwidth)
+            shamrock.SetPixelWidth(self._pixelwidth)
+
+        else:
+            raise RuntimeError("Could not initialize Spectrometer")
 
 
     def __del__(self):
-        self.cam = None
-        self.spec = None
+        andor = None
+        shamrock = None
 
     def TakeFullImage(self):
-        self.cam.SetImage(1, 1, 1, self._width, 1, self._height)
+        andor.SetImage(1, 1, 1, self._width, 1, self._height)
         return self.TakeImage(self._width, self._height)
 
     def TakeImage(self, width, height):
-        self.cam.SetReadMode(4);
-        self.cam.StartAcquisition()
+        andor.SetReadMode(4);
+        andor.StartAcquisition()
 
         acquiring = True
         while acquiring:
-            status = self.cam.GetStatus()
+            status = andor.GetStatus()
             if status == 20073:
                 acquiring = False
             time.sleep(0.01)
-        data = self.cam.GetAcquiredData(width, height)
+        data = andor.GetAcquiredData(width, height)
         return data.transpose()
 
     def SetCentreWavelength(self,wavelength):
 
-        minwl, maxwl = self.spec.GetWavelengthLimits()
+        minwl, maxwl = shamrock.GetWavelengthLimits()
 
         if wavelength < maxwl & wavelength > minwl:
-            self.spec.SetWavelength(wavelength)
+            shamrock.SetWavelength(wavelength)
         else:
             pass
 
@@ -90,16 +92,16 @@ class Spectrometer:
     def TakeImageofSlit(self, reset = False):
         #get inital settings
         if reset:
-            wavelength = self.spec.GetWavelength()
-            slit = self.spec.GetAutoSlitWidth(1)
+            wavelength = shamrock.GetWavelength()
+            slit = shamrock.GetAutoSlitWidth(1)
 
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
         visible_xpixels = (self._max_slit_width)/self._pixelwidth
         min_width = round(self._width/2-visible_xpixels/2)
         max_width = self._width-min_width
 
-        #min_width -= 20
-        #max_width += 20
+        min_width -= 20
+        max_width += 20
 
         if min_width < 1 :
             min_width = 1
@@ -108,20 +110,25 @@ class Spectrometer:
 
         print((min_width,max_width))
 
-        self.cam.SetImage(1, 1, min_width, max_width, 1, self._height);
+        andor.SetImage(1, 1, min_width, max_width, 1, self._height);
 
-        self.spec.SetWavelength(0)
-        self.spec.SetAutoSlitWidth(1, self._max_slit_width)
+        shamrock.SetWavelength(0)
+        shamrock.SetAutoSlitWidth(1, self._max_slit_width)
 
         data = self.TakeImage(max_width-min_width+1,self._height)
 
         # return to old settings
         if reset:
-            self.spec.SetWavelength(wavelength)
-            self.spec.SetAutoSlitWidth(slit)
-            self.cam.SetImage(1, 1, 1, self._width, 1, self._height);
+            shamrock.SetWavelength(wavelength)
+            shamrock.SetAutoSlitWidth(slit)
+            andor.SetImage(1, 1, 1, self._width, 1, self._height);
 
         return data.transpose()
+
+
+    def SetSingleTrack(self,hstart,hstop):
+
+        andor.SetImage(1, 1, 1, self._width, hstart, hstop);
 
 
     def TakeSpectrum(self):

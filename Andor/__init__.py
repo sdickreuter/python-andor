@@ -1,1 +1,1 @@
-from . andorSDK import AndorSDK
+from . andorSDK import *
