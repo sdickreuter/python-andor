@@ -18,7 +18,7 @@ _init_path = '/usr/local/etc/andor'
     #def __init__():
     #    print("camera")
 
-def verbose(self, error, function=''):
+def verbose(error, function=''):
     if verbosity > 0:
         if not error is 20002:
             print("[%s]: %s" % (function, ERROR_CODE[error]))
@@ -46,6 +46,10 @@ def Initialize():
     error = lib.Initialize(dir)
     time.sleep(0.2)
     verbose(error, "Initialize")
+    if error is 20002:
+        return 1
+    else:
+        return 0
 
 def GetDetector():
     cdef int width = 0
@@ -56,23 +60,23 @@ def GetDetector():
     verbose(error, "GetDetector")
     return width, height
 
-def SetAcquisitionMode(self, mode):
+def SetAcquisitionMode(mode):
     cdef int m = mode
     error = lib.SetAcquisitionMode(m)
     verbose(error, "SetAcquisitionMode")
 
-def SetReadMode(self, mode):
+def SetReadMode(mode):
     cdef int m = mode
     error = lib.SetReadMode(m)
     verbose(error, "SetReadMode")
 
-def SetExposureTime(self, seconds):
+def SetExposureTime(seconds):
     seconds = float(seconds)
     cdef float s = seconds
     error = lib.SetExposureTime(s)
     verbose(error, "SetExposureTime")
 
-def SetImage(self, hbin, vbin, hstart, hend, vstart, vend):
+def SetImage(hbin, vbin, hstart, hend, vstart, vend):
     cdef int hb = hbin
     cdef int vb = vbin
     cdef int hs = hstart
@@ -82,7 +86,7 @@ def SetImage(self, hbin, vbin, hstart, hend, vstart, vend):
     error = lib.SetImage(hb, vb, hs, he, vs, ve)
     verbose(error, "SetImage")
 
-def SetShutter(self, typ, mode, closingtime, openingtime):
+def SetShutter(typ, mode, closingtime, openingtime):
     cdef int t = typ
     cdef int m = mode
     cdef int ct = closingtime
@@ -116,7 +120,7 @@ def GetStatus():
     #verbose(error, "_GetStatus")
     return status
 
-def GetAcquiredData(self, width, height):
+def GetAcquiredData(width, height):
     cdef unsigned int size = width*height
     cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
     error = lib.GetAcquiredData(data.data.as_ints, size)
@@ -157,7 +161,7 @@ def GetTemperatureRange():
     verbose(error, "GetTemperatureRange")
     return min_temp, max_temp
 
-def SetTemperature(self, temperature):
+def SetTemperature(temperature):
     cdef int temp = temperature
     error = lib.SetTemperature(temp)
     verbose(error, "SetTemperatur")

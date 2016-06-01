@@ -15,44 +15,47 @@ class Spectrometer:
 
     def __init__(self, verbosity = 2):
         self.verbosity = verbosity
-
         andor.verbosity = self.verbosity
-        andor.Initialize()
 
+        andor_initialized = andor.Initialize()
         time.sleep(2)
+        shamrock_initialized = shamrock.Initialize()
 
-        andor.SetTemperature(-15)
-        andor.CoolerON()
+        if andor_initialized and shamrock_initialized:
 
-        # //Set Read Mode to --Image--
-        andor.SetReadMode(4);
+            andor.SetTemperature(-15)
+            andor.CoolerON()
 
-        # //Set Acquisition mode to --Single scan--
-        andor.SetAcquisitionMode(1);
+            # //Set Read Mode to --Image--
+            andor.SetReadMode(4);
 
-        # //Set initial exposure time
-        andor.SetExposureTime(10);
+            # //Set Acquisition mode to --Single scan--
+            andor.SetAcquisitionMode(1);
 
-        # //Get Detector dimensions
-        self._width, self._height = andor.GetDetector()
-        print((self._width, self._height))
+            # //Set initial exposure time
+            andor.SetExposureTime(10);
 
-        # Get Size of Pixels
-        self._pixelwidth, self._pixelheight = andor.GetPixelSize()
+            # //Get Detector dimensions
+            self._width, self._height = andor.GetDetector()
+            print((self._width, self._height))
 
-        # //Initialize Shutter
-        andor.SetShutter(1, 0, 50, 50);
+            # Get Size of Pixels
+            self._pixelwidth, self._pixelheight = andor.GetPixelSize()
 
-        # //Setup Image dimensions
-        andor.SetImage(1, 1, 1, self._width, 1, self._height)
+            # //Initialize Shutter
+            andor.SetShutter(1, 0, 50, 50);
 
-        #shamrock = ShamrockSDK()
+            # //Setup Image dimensions
+            andor.SetImage(1, 1, 1, self._width, 1, self._height)
 
-        shamrock.Initialize()
+            #shamrock = ShamrockSDK()
 
-        shamrock.SetNumberPixels(self._width)
+            shamrock.SetNumberPixels(self._width)
 
-        shamrock.SetPixelWidth(self._pixelwidth)
+            shamrock.SetPixelWidth(self._pixelwidth)
+
+        else:
+            raise RuntimeError("Could not initialize Spectrometer")
 
 
     def __del__(self):
@@ -121,6 +124,11 @@ class Spectrometer:
             andor.SetImage(1, 1, 1, self._width, 1, self._height);
 
         return data.transpose()
+
+
+    def SetSingleTrack(self,hstart,hstop):
+
+        andor.SetImage(1, 1, 1, self._width, hstart, hstop);
 
 
     def TakeSpectrum(self):

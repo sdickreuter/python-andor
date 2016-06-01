@@ -25,7 +25,7 @@ device = 0
 
 def verbose(error, function=''):
     if verbosity > 0:
-        if not error is 20002:
+        if not error is 20202:
             print("[%s]: %s" % (function, ERROR_CODE[error]))
         elif verbosity > 1:
             print("[%s]: %s" % (function, ERROR_CODE[error]))
@@ -35,6 +35,10 @@ def Initialize():
     cdef char* dir = dir_bytes
     error = lib.ShamrockInitialize(dir)
     verbose(error, "_Initialize")
+    if error is 20202:
+        return 1
+    else:
+        return 0
     
 def Shutdown():
     lib.ShamrockClose()
