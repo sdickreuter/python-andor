@@ -43,7 +43,7 @@ class Spectrometer:
             self._pixelwidth, self._pixelheight = andor.GetPixelSize()
 
             # //Initialize Shutter
-            andor.SetShutter(1, 0, 50, 50);
+            #andor.SetShutter(1, 0, 50, 50);
 
             # //Setup Image dimensions
             andor.SetImage(1, 1, 1, self._width, 1, self._height)
