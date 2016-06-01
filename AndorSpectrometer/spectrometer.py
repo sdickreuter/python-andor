@@ -13,7 +13,7 @@ class Spectrometer:
     spec = None
 
 
-    def __init__(self, verbosity = 2):
+    def __init__(self, start_cooler = False, init_shutter = False,verbosity = 2):
         self.verbosity = verbosity
         andor.verbosity = self.verbosity
 
@@ -28,7 +28,8 @@ class Spectrometer:
         if andor_initialized and shamrock_initialized:
 
             andor.SetTemperature(-15)
-            andor.CoolerON()
+            if start_cooler:
+                andor.CoolerON()
 
             # //Set Read Mode to --Image--
             andor.SetReadMode(4);
@@ -47,7 +48,8 @@ class Spectrometer:
             self._pixelwidth, self._pixelheight = andor.GetPixelSize()
 
             # //Initialize Shutter
-            #andor.SetShutter(1, 0, 50, 50);
+            if init_shutter:
+                andor.SetShutter(1, 0, 50, 50);
 
             # //Setup Image dimensions
             andor.SetImage(1, 1, 1, self._width, 1, self._height)
@@ -58,7 +60,7 @@ class Spectrometer:
 
             shamrock.SetPixelWidth(self._pixelwidth)
 
-            self.setCentreWavelength(0.0)
+            self.SetCentreWavelength(0.0)
 
         else:
             raise RuntimeError("Could not initialize Spectrometer")
@@ -69,6 +71,9 @@ class Spectrometer:
         shamrock.Shutdown()
         #andor = None
         #shamrock = None
+
+    def SetExposureTime(self, seconds):
+        andor.SetExposureTime(seconds)
 
     def GetWavelength(self):
         return self._wl
@@ -92,9 +97,9 @@ class Spectrometer:
 
     def SetCentreWavelength(self,wavelength):
 
-        minwl, maxwl = shamrock.GetWavelengthLimits()
+        minwl, maxwl = shamrock.GetWavelengthLimits(shamrock.GetGrating())
 
-        if wavelength < maxwl & wavelength > minwl:
+        if (wavelength < maxwl) and (wavelength > minwl):
             shamrock.SetWavelength(wavelength)
             self._wl = shamrock.GetCalibration(self._width)
         else:
@@ -155,5 +160,4 @@ class Spectrometer:
                 acquiring = False
             time.sleep(0.01)
         data = andor.GetAcquiredData(self._width, (self._hstop-self._hstart)+1 )
-        data = np.mean(data,0)
-        return data.transpose()
+        return data

@@ -1,12 +1,20 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import AndorSpectrometer
+from AndorSpectrometer import Spectrometer
 
-spec = AndorSpectrometer.Spectrometer()
+spec = Spectrometer()
 
-data = spec.TakeImageofSlit()
+spec.SetCentreWavelength(650)
+spec.SetSingleTrack(100,105)
+spec.SetExposureTime(10)
+d = spec.TakeSingleTrack()
+d2 = spec.TakeSingleTrack()
 
-plt.imshow(data)
+print(d.shape)
+
+plt.plot(spec.GetWavelength(),d)
 plt.show()
 
+plt.plot(spec.GetWavelength(),d2)
+plt.show()
