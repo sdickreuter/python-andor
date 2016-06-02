@@ -141,7 +141,7 @@ class Spectrometer:
             shamrock.SetAutoSlitWidth(1,slit)
             andor.SetImage(1, 1, 1, self._width, 1, self._height);
 
-        return data.transpose()
+        return data
 
 
     def SetSingleTrack(self,hstart,hstop):

@@ -125,7 +125,7 @@ def GetAcquiredData(width, height):
     cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
     error = lib.GetAcquiredData(data.data.as_ints, size)
     verbose(error, "GetAcquiredData")
-    return np.array(data).reshape((width,height))
+    return np.array(data).reshape((height,width))
 
 def GetPixelSize():
     cdef float xSize = 0
