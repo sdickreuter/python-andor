@@ -6,14 +6,21 @@ from AndorSpectrometer import Spectrometer
 
 spec = Spectrometer()
 time.sleep(30)
+
 spec.SetCentreWavelength(650)
 spec.SetSingleTrack(100,105)
 spec.SetExposureTime(1)
 d = spec.TakeSingleTrack()
 d2 = spec.TakeSingleTrack()
-img = spec.TakeFullImage()
+
 spec.SetExposureTime(0.001)
-slit = spec.TakeImageofSlit(True)
+
+spec.SetFullImage()
+img = spec.TakeFullImage()
+
+spec.SetSlitWidth(2500)
+spec.SetImageofSlit()
+slit = spec.TakeImageofSlit()
 
 print(d.shape)
 

@@ -44,6 +44,8 @@ class Spectrometer:
             # //Get Detector dimensions
             self._width, self._height = andor.GetDetector()
             print((self._width, self._height))
+            self.min_width = 1
+            self.max_width = self._width
 
             # Get Size of Pixels
             self._pixelwidth, self._pixelheight = andor.GetPixelSize()
@@ -61,10 +63,6 @@ class Spectrometer:
 
             shamrock.SetPixelWidth(self._pixelwidth)
 
-            shamrock.SetAutoSlitWidth(1,50)
-
-            self.SetCentreWavelength(0.0)
-
         else:
             raise RuntimeError("Could not initialize Spectrometer")
 
@@ -78,12 +76,17 @@ class Spectrometer:
     def SetExposureTime(self, seconds):
         andor.SetExposureTime(seconds)
 
+    def SetSlitWidth(self, slitwidth):
+        shamrock.SetAutoSlitWidth(1,slitwidth)
+
     def GetWavelength(self):
         return self._wl
 
-    def TakeFullImage(self):
+    def SetFullImage(self):
         andor.SetImage(1, 1, 1, self._width, 1, self._height)
-        return self.TakeImage(self._width, self._height)
+
+    def TakeFullImage(self):
+        return self.TakeImage(self._width,self._height)
 
     def TakeImage(self, width, height):
         andor.SetReadMode(4)
@@ -109,12 +112,7 @@ class Spectrometer:
             pass
 
 
-    def TakeImageofSlit(self, reset = False):
-        #get inital settings
-        if reset:
-            wavelength = shamrock.GetWavelength()
-            slit = shamrock.GetAutoSlitWidth(1)
-
+    def SetImageofSlit(self):
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
         visible_xpixels = (self._max_slit_width)/self._pixelwidth
         min_width = round(self._width/2-visible_xpixels/2)
@@ -128,19 +126,16 @@ class Spectrometer:
         if max_width > self._width:
             max_width = self._width
 
-        andor.SetImage(1, 1, min_width, max_width, 1, self._height);
+        self.min_width = min_width
+        self.max_width = max_width
+
+        andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
 
         shamrock.SetWavelength(0)
-        shamrock.SetAutoSlitWidth(1, self._max_slit_width)
 
-        data = self.TakeImage(max_width-min_width+1,self._height)
 
-        # return to old settings
-        if reset:
-            shamrock.SetWavelength(wavelength)
-            shamrock.SetAutoSlitWidth(1,slit)
-            andor.SetImage(1, 1, 1, self._width, 1, self._height);
-
+    def TakeImageofSlit(self):
+        data = self.TakeImage(self.max_width-self.min_width+1,self._height)
         return data
 
 
