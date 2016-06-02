@@ -13,11 +13,10 @@ spec.SetExposureTime(1)
 d = spec.TakeSingleTrack()
 d2 = spec.TakeSingleTrack()
 
-spec.SetExposureTime(0.001)
-
 spec.SetFullImage()
 img = spec.TakeFullImage()
 
+spec.SetExposureTime(0.001)
 spec.SetSlitWidth(2500)
 spec.SetImageofSlit()
 slit = spec.TakeImageofSlit()
