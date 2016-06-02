@@ -24,10 +24,10 @@ slit = spec.TakeImageofSlit()
 
 print(d.shape)
 
-plt.plot(spec.GetWavelength(),d)
+plt.plot(spec.GetWavelength(),np.mean(d,1))
 plt.show()
 
-plt.plot(spec.GetWavelength(),d2)
+plt.plot(spec.GetWavelength(),np.mean(d2,1))
 plt.show()
 
 plt.imshow(img)
