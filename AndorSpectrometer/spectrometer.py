@@ -40,6 +40,7 @@ class Spectrometer:
             # //Set initial exposure time
             andor.SetExposureTime(10);
 
+
             # //Get Detector dimensions
             self._width, self._height = andor.GetDetector()
             print((self._width, self._height))
@@ -59,6 +60,8 @@ class Spectrometer:
             shamrock.SetNumberPixels(self._width)
 
             shamrock.SetPixelWidth(self._pixelwidth)
+
+            shamrock.SetAutoSlitWidth(1,50)
 
             self.SetCentreWavelength(0.0)
 
@@ -117,15 +120,13 @@ class Spectrometer:
         min_width = round(self._width/2-visible_xpixels/2)
         max_width = self._width-min_width
 
-        min_width -= 20
-        max_width += 20
+        min_width -= 50
+        max_width += 50
 
         if min_width < 1 :
             min_width = 1
         if max_width > self._width:
             max_width = self._width
-
-        print((min_width,max_width))
 
         andor.SetImage(1, 1, min_width, max_width, 1, self._height);
 
@@ -137,7 +138,7 @@ class Spectrometer:
         # return to old settings
         if reset:
             shamrock.SetWavelength(wavelength)
-            shamrock.SetAutoSlitWidth(slit)
+            shamrock.SetAutoSlitWidth(1,slit)
             andor.SetImage(1, 1, 1, self._width, 1, self._height);
 
         return data.transpose()
