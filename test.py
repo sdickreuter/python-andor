@@ -8,6 +8,7 @@ spec = Spectrometer()
 time.sleep(30)
 
 spec.SetCentreWavelength(650)
+spec.SetSlitWidth(50)
 spec.SetSingleTrack(100,105)
 spec.SetExposureTime(1)
 d = spec.TakeSingleTrack()
