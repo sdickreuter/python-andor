@@ -76,12 +76,6 @@ def SetExposureTime(seconds):
     error = lib.SetExposureTime(s)
     verbose(error, "SetExposureTime")
 
-def GetExposureTime():
-    cdef float seconds
-    error = lib.GetExposureTime(seconds)
-    verbose(error, "SetExposureTime")
-    return seconds
-
 def SetImage(hbin, vbin, hstart, hend, vstart, vend):
     cdef int hb = hbin
     cdef int vb = vbin
