@@ -74,6 +74,9 @@ class Spectrometer:
     def SetExposureTime(self, seconds):
         andor.SetExposureTime(seconds)
 
+    def GetExposureTime(self):
+        return andor.GetExposureTime()
+
     def SetSlitWidth(self, slitwidth):
         shamrock.SetAutoSlitWidth(1, slitwidth)
 
