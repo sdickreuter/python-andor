@@ -143,7 +143,7 @@ class Spectrometer:
         else:
             self._hstart = hstart
             self._hstop = hstop
-        andor.SetImage(1, 1, 1, self._width, hstart, hstop);
+        andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop);
 
     def TakeSingleTrack(self):
         andor.SetReadMode(4)

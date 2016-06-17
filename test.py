@@ -4,8 +4,8 @@ import time
 import matplotlib.pyplot as plt
 from AndorSpectrometer import Spectrometer
 
-spec = Spectrometer()
-time.sleep(30)
+spec = Spectrometer(init_shutter=True)
+#time.sleep(30)
 
 spec.SetCentreWavelength(650)
 spec.SetSlitWidth(50)
@@ -24,10 +24,10 @@ slit = spec.TakeImageofSlit()
 
 print(d.shape)
 
-plt.plot(spec.GetWavelength(),np.mean(d,1))
+plt.plot(spec.GetWavelength(),d)
 plt.show()
 
-plt.plot(spec.GetWavelength(),np.mean(d2,1))
+plt.plot(spec.GetWavelength(),d2)
 plt.show()
 
 plt.imshow(img)
