@@ -1,6 +1,6 @@
 import numpy as np
 import time
-
+import sys
 import Andor.andorSDK as andor
 import Shamrock.shamrockSDK as shamrock
 
@@ -15,15 +15,17 @@ class Spectrometer:
         self.verbosity = verbosity
         andor.verbosity = self.verbosity
 
+        self._wl = None
+        self._hstart = 100
+        self._hstop = 110
+        andor_initialized = 0
+        shamrock_initialized = 0
+
         andor_initialized = andor.Initialize()
         time.sleep(2)
         shamrock_initialized = shamrock.Initialize()
 
-        self._wl = None
-        self._hstart = 100
-        self._hstop = 110
-
-        if andor_initialized and shamrock_initialized:
+        if (andor_initialized > 0) and (shamrock_initialized > 0):
 
             andor.SetTemperature(-15)
             if start_cooler:

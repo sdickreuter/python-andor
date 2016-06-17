@@ -4,12 +4,12 @@ import time
 import matplotlib.pyplot as plt
 from AndorSpectrometer import Spectrometer
 
-spec = Spectrometer(init_shutter=True)
+spec = Spectrometer(start_cooler=False,init_shutter=True)
 #time.sleep(30)
 
 spec.SetCentreWavelength(650)
 spec.SetSlitWidth(50)
-spec.SetSingleTrack(100,105)
+spec.SetSingleTrack()
 spec.SetExposureTime(1)
 d = spec.TakeSingleTrack()
 d2 = spec.TakeSingleTrack()
