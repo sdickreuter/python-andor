@@ -53,7 +53,7 @@ def Initialize():
 
 def AbortAcquisition():
     error = lib.AbortAcquisition()
-    verbose(error, "GetDetector")
+    verbose(error, "AbortAcquisition")
 
 def GetDetector():
     cdef int width = 0
