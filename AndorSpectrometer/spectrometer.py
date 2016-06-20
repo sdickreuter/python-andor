@@ -67,8 +67,8 @@ class Spectrometer:
             raise RuntimeError("Could not initialize Spectrometer")
 
     def __del__(self):
-        andor.Shutdown()
         shamrock.Shutdown()
+        andor.Shutdown()
         # andor = None
         # shamrock = None
 
