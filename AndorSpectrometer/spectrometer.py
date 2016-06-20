@@ -14,6 +14,7 @@ class Spectrometer:
     def __init__(self, start_cooler=False, init_shutter=False, verbosity=2):
         self.verbosity = verbosity
         andor.verbosity = self.verbosity
+        shamrock.verbosity = self.verbosity
 
         self._wl = None
         self._hstart = 100
