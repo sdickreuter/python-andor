@@ -72,6 +72,9 @@ class Spectrometer:
         # andor = None
         # shamrock = None
 
+    def AbortAcquisition(self):
+        andor.AbortAcquisition()
+
     def SetExposureTime(self, seconds):
         andor.SetExposureTime(seconds)
 
