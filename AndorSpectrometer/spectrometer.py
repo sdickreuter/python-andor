@@ -104,7 +104,7 @@ class Spectrometer:
             status = andor.GetStatus()
             if status == 20073:
                 acquiring = False
-            if not status ==20072:
+            elif not status == 20072:
                 print(andor.ERROR_CODE[status])
                 return None
         data = andor.GetAcquiredData(width, height)
