@@ -5,6 +5,8 @@ import Andor.andorSDK as andor
 import Shamrock.shamrockSDK as shamrock
 
 
+
+
 class Spectrometer:
     verbosity = 2
     _max_slit_width = 2500  # maximal width of slit in um
@@ -74,6 +76,9 @@ class Spectrometer:
 
     def AbortAcquisition(self):
         andor.AbortAcquisition()
+
+    def SetNumberAccumulations(self, number):
+        andor.SetNumberAccumulations(number)
 
     def SetExposureTime(self, seconds):
         andor.SetExposureTime(seconds)

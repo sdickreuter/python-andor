@@ -10,13 +10,15 @@ cimport numpy as np
 from cpython cimport array
 import array
 
-#class AndorSDK:
 
 verbosity = 2
 _init_path = '/usr/local/etc/andor'
 
-    #def __init__():
-    #    print("camera")
+AcquistionModes = { 'Single Scan' : 1,
+                    'Accumulate' : 2,
+                    'Kinetics' : 3,
+                    'Fast Kinetics' : 4,
+                    'Run till abort' : 5}
 
 def verbose(error, function=''):
     if verbosity > 0:
@@ -24,9 +26,6 @@ def verbose(error, function=''):
             print("[%s]: %s" % (function, ERROR_CODE[error]))
         elif verbosity > 1:
             print("[%s]: %s" % (function, ERROR_CODE[error]))
-
-    #def __del__():
-    #    Shutdown()
 
 def Shutdown():
     CoolerOFF()
@@ -178,3 +177,7 @@ def CoolerOFF():
     error = lib.CoolerOFF()
     verbose(error, "CoolerOFF")
 
+def SetNumberAccumulations(number):
+    cdef int n = number
+    error = lib.SetNumberAccumulations(n)
+    verbose(error, "SetNumberAccumulations")
