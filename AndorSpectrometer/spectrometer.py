@@ -72,9 +72,8 @@ class Spectrometer:
             raise RuntimeError("Could not initialize Spectrometer")
 
     def __del__(self):
-        with QMutexLocker(self.lock):
-            shamrock.Shutdown()
-            andor.Shutdown()
+        shamrock.Shutdown()
+        andor.Shutdown()
         # andor = None
         # shamrock = None
 
@@ -107,9 +106,8 @@ class Spectrometer:
 
     def TakeImage(self, width, height):
         with QMutexLocker(self.lock):
-            andor.SetReadMode(4)
+            print(andor.ERROR_CODE[andor.GetStatus()])
             andor.StartAcquisition()
-
             acquiring = True
             while acquiring:
                 status = andor.GetStatus()
@@ -175,9 +173,7 @@ class Spectrometer:
 
     def TakeSingleTrack(self):
         with QMutexLocker(self.lock):
-            andor.SetReadMode(4)
             andor.StartAcquisition()
-
             acquiring = True
             while acquiring:
                 status = andor.GetStatus()
@@ -185,7 +181,7 @@ class Spectrometer:
                     acquiring = False
                 elif not status == 20072:
                     print(andor.ERROR_CODE[status])
-                    return None
+                    return np.zeros(self._width)
             data = andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         data = np.mean(data,1)
         return data
