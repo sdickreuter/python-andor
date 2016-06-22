@@ -4,7 +4,7 @@ import sys
 import Andor.andorSDK as andor
 import Shamrock.shamrockSDK as shamrock
 
-
+from PyQt5.QtCore import QMutex, QMutexLocker
 
 
 class Spectrometer:
@@ -12,6 +12,7 @@ class Spectrometer:
     _max_slit_width = 2500  # maximal width of slit in um
     cam = None
     spec = None
+    lock = QMutex()
 
     def __init__(self, start_cooler=False, init_shutter=False, verbosity=2):
         self.verbosity = verbosity
@@ -24,99 +25,110 @@ class Spectrometer:
         andor_initialized = 0
         shamrock_initialized = 0
 
-        andor_initialized = andor.Initialize()
-        time.sleep(2)
-        shamrock_initialized = shamrock.Initialize()
+        with QMutexLocker(self.lock):
+            andor_initialized = andor.Initialize()
+            time.sleep(2)
+            shamrock_initialized = shamrock.Initialize()
 
         if (andor_initialized > 0) and (shamrock_initialized > 0):
 
-            andor.SetTemperature(-15)
-            if start_cooler:
-                andor.CoolerON()
+            with QMutexLocker(self.lock):
+                andor.SetTemperature(-15)
+                if start_cooler:
+                    andor.CoolerON()
 
-            # //Set Read Mode to --Image--
-            andor.SetReadMode(4);
+                # //Set Read Mode to --Image--
+                andor.SetReadMode(4);
 
-            # //Set Acquisition mode to --Single scan--
-            andor.SetAcquisitionMode(1);
+                # //Set Acquisition mode to --Single scan--
+                andor.SetAcquisitionMode(1);
 
-            # //Set initial exposure time
-            andor.SetExposureTime(10);
+                # //Set initial exposure time
+                andor.SetExposureTime(10);
 
-            # //Get Detector dimensions
-            self._width, self._height = andor.GetDetector()
-            print((self._width, self._height))
-            self.min_width = 1
-            self.max_width = self._width
+                # //Get Detector dimensions
+                self._width, self._height = andor.GetDetector()
+                print((self._width, self._height))
+                self.min_width = 1
+                self.max_width = self._width
 
-            # Get Size of Pixels
-            self._pixelwidth, self._pixelheight = andor.GetPixelSize()
+                # Get Size of Pixels
+                self._pixelwidth, self._pixelheight = andor.GetPixelSize()
 
-            # //Initialize Shutter
-            if init_shutter:
-                andor.SetShutter(1, 0, 50, 50);
+                # //Initialize Shutter
+                if init_shutter:
+                    andor.SetShutter(1, 0, 50, 50);
 
-            # //Setup Image dimensions
-            andor.SetImage(1, 1, 1, self._width, 1, self._height)
+                # //Setup Image dimensions
+                andor.SetImage(1, 1, 1, self._width, 1, self._height)
 
-            # shamrock = ShamrockSDK()
+                # shamrock = ShamrockSDK()
 
-            shamrock.SetNumberPixels(self._width)
+                shamrock.SetNumberPixels(self._width)
 
-            shamrock.SetPixelWidth(self._pixelwidth)
+                shamrock.SetPixelWidth(self._pixelwidth)
 
         else:
             raise RuntimeError("Could not initialize Spectrometer")
 
     def __del__(self):
-        shamrock.Shutdown()
-        andor.Shutdown()
+        with QMutexLocker(self.lock):
+            shamrock.Shutdown()
+            andor.Shutdown()
         # andor = None
         # shamrock = None
 
     def AbortAcquisition(self):
-        andor.AbortAcquisition()
+        with QMutexLocker(self.lock):
+            andor.AbortAcquisition()
 
     def SetNumberAccumulations(self, number):
-        andor.SetNumberAccumulations(number)
+        with QMutexLocker(self.lock):
+            andor.SetNumberAccumulations(number)
 
     def SetExposureTime(self, seconds):
-        andor.SetExposureTime(seconds)
+        with QMutexLocker(self.lock):
+            andor.SetExposureTime(seconds)
 
     def SetSlitWidth(self, slitwidth):
-        shamrock.SetAutoSlitWidth(1, slitwidth)
+        with QMutexLocker(self.lock):
+            shamrock.SetAutoSlitWidth(1, slitwidth)
 
     def GetWavelength(self):
         return self._wl
 
     def SetFullImage(self):
-        andor.SetImage(1, 1, 1, self._width, 1, self._height)
+        with QMutexLocker(self.lock):
+            andor.SetImage(1, 1, 1, self._width, 1, self._height)
 
     def TakeFullImage(self):
-        return self.TakeImage(self._width, self._height)
+        with QMutexLocker(self.lock):
+            return self.TakeImage(self._width, self._height)
 
     def TakeImage(self, width, height):
-        andor.SetReadMode(4)
-        andor.StartAcquisition()
+        with QMutexLocker(self.lock):
+            andor.SetReadMode(4)
+            andor.StartAcquisition()
 
-        acquiring = True
-        while acquiring:
-            status = andor.GetStatus()
-            if status == 20073:
-                acquiring = False
-            elif not status == 20072:
-                print(andor.ERROR_CODE[status])
-                return None
-        data = andor.GetAcquiredData(width, height)
-        return data.transpose()
+            acquiring = True
+            while acquiring:
+                status = andor.GetStatus()
+                if status == 20073:
+                    acquiring = False
+                elif not status == 20072:
+                    print(andor.ERROR_CODE[status])
+                    return None
+            data = andor.GetAcquiredData(width, height)
+            return data.transpose()
 
     def SetCentreWavelength(self, wavelength):
-
-        minwl, maxwl = shamrock.GetWavelengthLimits(shamrock.GetGrating())
+        with QMutexLocker(self.lock):
+            minwl, maxwl = shamrock.GetWavelengthLimits(shamrock.GetGrating())
 
         if (wavelength < maxwl) and (wavelength > minwl):
-            shamrock.SetWavelength(wavelength)
-            self._wl = shamrock.GetCalibration(self._width)
+            with QMutexLocker(self.lock):
+                shamrock.SetWavelength(wavelength)
+                self._wl = shamrock.GetCalibration(self._width)
         else:
             pass
 
@@ -138,17 +150,19 @@ class Spectrometer:
         self.min_width = min_width
         self.max_width = max_width
 
-        andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
-
-        shamrock.SetWavelength(0)
+        with QMutexLocker(self.lock):
+            andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
+            shamrock.SetWavelength(0)
 
     def TakeImageofSlit(self):
-        data = self.TakeImage(self.max_width - self.min_width + 1, self._height)
+        with QMutexLocker(self.lock):
+            data = self.TakeImage(self.max_width - self.min_width + 1, self._height)
         return data
 
     def SetSingleTrack(self, hstart=None, hstop=None):
         if (hstart is None) or (hstop is None):
-            slitwidth = shamrock.GetAutoSlitWidth(1)
+            with QMutexLocker(self.lock):
+                slitwidth = shamrock.GetAutoSlitWidth(1)
             pixels = (slitwidth / self._pixelheight)
             middle = self._height / 2
             self._hstart = round(middle - pixels / 2)
@@ -156,18 +170,22 @@ class Spectrometer:
         else:
             self._hstart = hstart
             self._hstop = hstop
-        andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop);
+        with QMutexLocker(self.lock):
+            andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop);
 
     def TakeSingleTrack(self):
-        andor.SetReadMode(4)
-        andor.StartAcquisition()
+        with QMutexLocker(self.lock):
+            andor.SetReadMode(4)
+            andor.StartAcquisition()
 
-        acquiring = True
-        while acquiring:
-            status = andor.GetStatus()
-            if status == 20073:
-                acquiring = False
-            time.sleep(0.01)
-        data = andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
+            acquiring = True
+            while acquiring:
+                status = andor.GetStatus()
+                if status == 20073:
+                    acquiring = False
+                elif not status == 20072:
+                    print(andor.ERROR_CODE[status])
+                    return None
+            data = andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         data = np.mean(data,1)
         return data
