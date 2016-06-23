@@ -94,7 +94,12 @@ class Spectrometer:
 
     def GetGratingInfo(self):
         with QMutexLocker(self.lock):
-            return shamrock.GetGratingInfo()
+            num_gratings = shamrock.GetNumberGratings()
+            gratings = {}
+            for i in range(num_gratings):
+                lines, blaze, home, offset = shamrock.GetGratingInfo(i+1)
+                gratings[i+1] = lines
+        return gratings
 
     def GetGrating(self):
         with QMutexLocker(self.lock):
