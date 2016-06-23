@@ -90,7 +90,7 @@ class Spectrometer:
 
     def GetSlitWidth(self):
         with QMutexLocker(self.lock):
-            return shamrock.GetAutoSlitWidth()
+            return shamrock.GetAutoSlitWidth(1)
 
     def GetGratingInfo(self):
         with QMutexLocker(self.lock):
