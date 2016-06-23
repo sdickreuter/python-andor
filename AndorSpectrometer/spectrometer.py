@@ -88,6 +88,22 @@ class Spectrometer:
         with QMutexLocker(self.lock):
             return andor.GetTemperature()
 
+    def GetSlitWidth(self):
+        with QMutexLocker(self.lock):
+            return shamrock.GetAutoSlitWidth()
+
+    def GetGratingInfo(self):
+        with QMutexLocker(self.lock):
+            return shamrock.GetGratingInfo()
+
+    def GetGrating(self):
+        with QMutexLocker(self.lock):
+            return shamrock.GetGrating()
+
+    def SetGrating(self, grating):
+        with QMutexLocker(self.lock):
+            return shamrock.SetGrating(grating)
+
     def AbortAcquisition(self):
         with QMutexLocker(self.lock):
             andor.AbortAcquisition()
