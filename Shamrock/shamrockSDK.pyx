@@ -6,22 +6,12 @@ cimport ShamrockCIF as lib
 import numpy as np
 cimport numpy as np
 
-
 from cpython cimport array
 import array
-
-#class ShamrockSDK:
 
 verbosity = 2
 init_path = '/usr/local/etc/andor'
 device = 0
-
-    #def __init__(device = 0):
-    #    device = device
-    #    print("spectrograph")
-
-    #def __del__():
-    #    lib.ShamrockClose()
 
 def verbose(error, function=''):
     if verbosity > 0:

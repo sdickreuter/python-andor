@@ -72,8 +72,15 @@ class Spectrometer:
             raise RuntimeError("Could not initialize Spectrometer")
 
     def __del__(self):
-        shamrock.Shutdown()
-        andor.Shutdown()
+        with QMutexLocker(self.lock):
+            try:
+                andor.Shutdown()
+            except:
+                pass
+            try:
+                shamrock.Shutdown()
+            except:
+                pass
         # andor = None
         # shamrock = None
 
