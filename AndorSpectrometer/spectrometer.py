@@ -84,6 +84,10 @@ class Spectrometer:
         # andor = None
         # shamrock = None
 
+    def GetTemperature(self):
+        with QMutexLocker(self.lock):
+            return andor.GetTemperature()
+
     def AbortAcquisition(self):
         with QMutexLocker(self.lock):
             andor.AbortAcquisition()
