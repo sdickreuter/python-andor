@@ -76,12 +76,12 @@ class Spectrometer:
         with QMutexLocker(self.lock):
             try:
                 andor.Shutdown()
-            except:
-                pass
+            except TypeError as e:
+                print(e)
             try:
                 shamrock.Shutdown()
-            except:
-                pass
+            except TypeError as e:
+                print(e)
         # andor = None
         # shamrock = None
 
@@ -210,7 +210,7 @@ class Spectrometer:
             andor.SetExposureTime(self.exp_time)
             andor.StartAcquisition()
         acquiring = True
-        i = 0
+        #i = 0
         while acquiring:
             time.sleep(0.01)
             with QMutexLocker(self.lock):
@@ -220,10 +220,10 @@ class Spectrometer:
             elif not status == 20072:
                 print(andor.ERROR_CODE[status])
                 return np.zeros(self._width)
-            if (i+1)*0.01 > self.exp_time:
-                print("Acquisition is taking longer than expected, exiting")
-                return np.zeros(self._width)
-            i += 1
+            #if (i+1)*0.01 > self.exp_time:
+            #    print("Acquisition is taking longer than expected, exiting")
+            #    return np.zeros(self._width)
+            #i += 1
         with QMutexLocker(self.lock):
             data = andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         data = np.mean(data,1)
