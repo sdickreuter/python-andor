@@ -71,19 +71,19 @@ class Spectrometer:
 
         else:
             raise RuntimeError("Could not initialize Spectrometer")
+            sys.exit(0)
 
     def __del__(self):
-        with QMutexLocker(self.lock):
-            try:
-                andor.Shutdown()
-            except TypeError as e:
-                print(e)
-            try:
-                shamrock.Shutdown()
-            except TypeError as e:
-                print(e)
-        # andor = None
-        # shamrock = None
+        #print("Begin AndorSpectrometer.__del__")
+        try:
+            andor.Shutdown()
+        except AttributeError as e:
+            print(e)
+        try:
+            shamrock.Shutdown()
+        except AttributeError as e:
+            print(e)
+        #print("End AndorSpectrometer.__del__")
 
     def GetTemperature(self):
         with QMutexLocker(self.lock):
