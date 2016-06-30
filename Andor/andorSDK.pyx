@@ -1,5 +1,4 @@
 import sys
-import time
 
 from Andor.errorcodes import ERROR_CODE
 cimport atmcdLXd as lib
@@ -34,7 +33,6 @@ def Shutdown():
     while not warm:
         if GetTemperature() > -20:
             warm = True
-        time.sleep(0.1)
 
     error = lib.ShutDown()
     #verbose(error, sys._getframe().f_code.co_name)
@@ -43,7 +41,6 @@ def Initialize():
     dir_bytes = _init_path.encode('UTF-8')
     cdef char* dir = dir_bytes
     error = lib.Initialize(dir)
-    time.sleep(0.2)
     verbose(error, "Initialize")
     if error is 20002:
         return 1

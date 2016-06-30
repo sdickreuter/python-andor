@@ -12,6 +12,7 @@ class Spectrometer:
     _max_slit_width = 2500  # maximal width of slit in um
     cam = None
     spec = None
+    closed = False
     lock = QMutex()
 
     def __init__(self, start_cooler=False, init_shutter=False, verbosity=2):
@@ -74,16 +75,26 @@ class Spectrometer:
             sys.exit(0)
 
     def __del__(self):
-        #print("Begin AndorSpectrometer.__del__")
-        try:
+        if not self.closed:
+            self.lock.unlock()
             andor.Shutdown()
-        except AttributeError as e:
-            print(e)
-        try:
             shamrock.Shutdown()
-        except AttributeError as e:
-            print(e)
+        #print("Begin AndorSpectrometer.__del__")
+        # if not self.closed:
+        #     try:
+        #         andor.Shutdown()
+        #     except (AttributeError, TypeError) as e:
+        #         print(e)
+        #     try:
+        #         shamrock.Shutdown()
+        #     except (AttributeError, TypeError) as e:
+        #         print(e)
         #print("End AndorSpectrometer.__del__")
+
+    def Shutdown(self):
+        andor.Shutdown()
+        shamrock.Shutdown()
+        self.closed = True
 
     def GetTemperature(self):
         with QMutexLocker(self.lock):
