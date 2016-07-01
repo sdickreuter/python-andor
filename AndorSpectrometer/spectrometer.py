@@ -164,7 +164,8 @@ class Spectrometer:
                     print(andor.ERROR_CODE[status])
                     return None
             data = andor.GetAcquiredData(width, height)
-            return data.transpose()
+            #return data.transpose()
+            return data
 
     def SetCentreWavelength(self, wavelength):
         with QMutexLocker(self.lock):
@@ -204,8 +205,7 @@ class Spectrometer:
         self.mode = "Image"
 
     def TakeImageofSlit(self):
-        data = self.TakeImage(self.max_width - self.min_width + 1, self._height)
-        return data
+        return self.TakeImage(self.max_width - self.min_width + 1, self._height)
 
     def SetSingleTrack(self, hstart=None, hstop=None):
         if (hstart is None) or (hstop is None):
