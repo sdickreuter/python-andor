@@ -12,6 +12,7 @@ class Spectrometer:
     _max_slit_width = 2500  # maximal width of slit in um
     cam = None
     spec = None
+    closed = False
     lock = QMutex()
     mode = None
 
@@ -24,6 +25,7 @@ class Spectrometer:
         self._wl = None
         self._hstart = 100
         self._hstop = 110
+        self.exp_time = 0.2
         andor_initialized = 0
         shamrock_initialized = 0
 
@@ -46,7 +48,7 @@ class Spectrometer:
                 andor.SetAcquisitionMode(1);
 
                 # //Set initial exposure time
-                andor.SetExposureTime(10);
+                andor.SetExposureTime(self.exp_time);
 
                 # //Get Detector dimensions
                 self._width, self._height = andor.GetDetector()
@@ -72,19 +74,29 @@ class Spectrometer:
 
         else:
             raise RuntimeError("Could not initialize Spectrometer")
+            sys.exit(0)
 
     def __del__(self):
-        with QMutexLocker(self.lock):
-            try:
-                andor.Shutdown()
-            except:
-                pass
-            try:
-                shamrock.Shutdown()
-            except:
-                pass
-        # andor = None
-        # shamrock = None
+        if not self.closed:
+            self.lock.unlock()
+            andor.Shutdown()
+            shamrock.Shutdown()
+        #print("Begin AndorSpectrometer.__del__")
+        # if not self.closed:
+        #     try:
+        #         andor.Shutdown()
+        #     except (AttributeError, TypeError) as e:
+        #         print(e)
+        #     try:
+        #         shamrock.Shutdown()
+        #     except (AttributeError, TypeError) as e:
+        #         print(e)
+        #print("End AndorSpectrometer.__del__")
+
+    def Shutdown(self):
+        andor.Shutdown()
+        shamrock.Shutdown()
+        self.closed = True
 
     def GetTemperature(self):
         with QMutexLocker(self.lock):
@@ -120,6 +132,7 @@ class Spectrometer:
             andor.SetNumberAccumulations(number)
 
     def SetExposureTime(self, seconds):
+        self.exp_time = seconds
         with QMutexLocker(self.lock):
             andor.SetExposureTime(seconds)
 
@@ -209,15 +222,24 @@ class Spectrometer:
 
     def TakeSingleTrack(self):
         with QMutexLocker(self.lock):
+            andor.SetExposureTime(self.exp_time)
             andor.StartAcquisition()
-            acquiring = True
-            while acquiring:
+        acquiring = True
+        #i = 0
+        while acquiring:
+            time.sleep(0.01)
+            with QMutexLocker(self.lock):
                 status = andor.GetStatus()
-                if status == 20073:
-                    acquiring = False
-                elif not status == 20072:
-                    print(andor.ERROR_CODE[status])
-                    return np.zeros(self._width)
+            if status == 20073:
+                acquiring = False
+            elif not status == 20072:
+                print(andor.ERROR_CODE[status])
+                return np.zeros(self._width)
+            #if (i+1)*0.01 > self.exp_time:
+            #    print("Acquisition is taking longer than expected, exiting")
+            #    return np.zeros(self._width)
+            #i += 1
+        with QMutexLocker(self.lock):
             data = andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         data = np.mean(data,1)
         return data
