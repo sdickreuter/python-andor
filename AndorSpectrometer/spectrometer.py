@@ -146,7 +146,7 @@ class Spectrometer:
     def SetFullImage(self):
         with QMutexLocker(self.lock):
             andor.SetImage(1, 1, 1, self._width, 1, self._height)
-        self.mode = "FullImage"
+        self.mode = "Image"
 
     def TakeFullImage(self):
         with QMutexLocker(self.lock):
@@ -199,6 +199,7 @@ class Spectrometer:
         with QMutexLocker(self.lock):
             andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
             shamrock.SetWavelength(0)
+        self.mode = "Image"
 
     def TakeImageofSlit(self):
         with QMutexLocker(self.lock):
