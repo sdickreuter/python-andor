@@ -149,8 +149,7 @@ class Spectrometer:
         self.mode = "Image"
 
     def TakeFullImage(self):
-        with QMutexLocker(self.lock):
-            return self.TakeImage(self._width, self._height)
+        return self.TakeImage(self._width, self._height)
 
     def TakeImage(self, width, height):
         with QMutexLocker(self.lock):
@@ -179,6 +178,9 @@ class Spectrometer:
             pass
 
     def SetImageofSlit(self):
+        with QMutexLocker(self.lock):
+            shamrock.SetWavelength(0)
+
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
         visible_xpixels = (self._max_slit_width) / self._pixelwidth
         min_width = round(self._width / 2 - visible_xpixels / 2)
@@ -198,12 +200,11 @@ class Spectrometer:
 
         with QMutexLocker(self.lock):
             andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
-            shamrock.SetWavelength(0)
+
         self.mode = "Image"
 
     def TakeImageofSlit(self):
-        with QMutexLocker(self.lock):
-            data = self.TakeImage(self.max_width - self.min_width + 1, self._height)
+        data = self.TakeImage(self.max_width - self.min_width + 1, self._height)
         return data
 
     def SetSingleTrack(self, hstart=None, hstop=None):

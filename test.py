@@ -9,18 +9,21 @@ spec = Spectrometer(start_cooler=False,init_shutter=True)
 
 spec.SetCentreWavelength(650)
 spec.SetSlitWidth(50)
-spec.SetSingleTrack()
+
+
 spec.SetExposureTime(1)
+
+spec.SetImageofSlit()
+slit = spec.TakeImageofSlit()
+
+
+spec.SetSingleTrack()
 d = spec.TakeSingleTrack()
 d2 = spec.TakeSingleTrack()
 
 spec.SetFullImage()
 img = spec.TakeFullImage()
 
-spec.SetExposureTime(0.001)
-spec.SetSlitWidth(2500)
-spec.SetImageofSlit()
-slit = spec.TakeImageofSlit()
 
 print(d.shape)
 
