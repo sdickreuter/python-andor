@@ -13,6 +13,8 @@ class Spectrometer:
     cam = None
     spec = None
     lock = QMutex()
+    mode = None
+
 
     def __init__(self, start_cooler=False, init_shutter=False, verbosity=2):
         self.verbosity = verbosity
@@ -131,6 +133,7 @@ class Spectrometer:
     def SetFullImage(self):
         with QMutexLocker(self.lock):
             andor.SetImage(1, 1, 1, self._width, 1, self._height)
+        self.mode = "FullImage"
 
     def TakeFullImage(self):
         with QMutexLocker(self.lock):
@@ -202,6 +205,7 @@ class Spectrometer:
             self._hstop = hstop
         with QMutexLocker(self.lock):
             andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop);
+        self.mode = "SingleTrack"
 
     def TakeSingleTrack(self):
         with QMutexLocker(self.lock):
