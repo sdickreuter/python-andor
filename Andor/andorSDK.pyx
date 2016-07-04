@@ -27,6 +27,7 @@ def verbose(error, function=''):
             print("[%s]: %s" % (function, ERROR_CODE[error]))
 
 def Shutdown():
+    lib.AbortAcquisition()
     CoolerOFF()
 
     warm = False
