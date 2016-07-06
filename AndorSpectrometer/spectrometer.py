@@ -221,10 +221,8 @@ class Spectrometer:
 
     def TakeSingleTrack(self):
         with QMutexLocker(self.lock):
-            #andor.SetExposureTime(self.exp_time)
             andor.StartAcquisition()
         acquiring = True
-        #i = 0
         while acquiring:
             time.sleep(0.01)
             with QMutexLocker(self.lock):
