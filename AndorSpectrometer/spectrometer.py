@@ -31,7 +31,7 @@ class Spectrometer:
 
         with QMutexLocker(self.lock):
             andor_initialized = andor.Initialize()
-            time.sleep(2)
+            #time.sleep(2)
             shamrock_initialized = shamrock.Initialize()
 
         if (andor_initialized > 0) and (shamrock_initialized > 0):
