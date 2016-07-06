@@ -11,7 +11,7 @@ spec.SetCentreWavelength(650)
 spec.SetSlitWidth(50)
 
 
-spec.SetExposureTime(1)
+spec.SetExposureTime(0.1)
 
 spec.SetImageofSlit()
 slit = spec.TakeImageofSlit()

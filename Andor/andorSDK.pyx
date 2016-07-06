@@ -8,7 +8,7 @@ cimport numpy as np
 
 from cpython cimport array
 import array
-
+import time
 
 verbosity = 2
 _init_path = '/usr/local/etc/andor'
@@ -30,10 +30,13 @@ def Shutdown():
     lib.AbortAcquisition()
     CoolerOFF()
 
-    warm = False
-    while not warm:
-        if GetTemperature() > -20:
-            warm = True
+    if GetTemperature() <= -20:
+        print("Detector warming up, please wait."
+        warm = False
+        while not warm:
+            if GetTemperature() > -20:
+                warm = True
+        print("Warmup finished.")
 
     error = lib.ShutDown()
     #verbose(error, sys._getframe().f_code.co_name)
@@ -42,6 +45,7 @@ def Initialize():
     dir_bytes = _init_path.encode('UTF-8')
     cdef char* dir = dir_bytes
     error = lib.Initialize(dir)
+    time.sleep(2)
     verbose(error, "Initialize")
     if error is 20002:
         return 1
