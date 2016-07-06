@@ -31,7 +31,7 @@ def Shutdown():
     CoolerOFF()
 
     if GetTemperature() <= -20:
-        print("Detector warming up, please wait."
+        print("Detector warming up, please wait.")
         warm = False
         while not warm:
             if GetTemperature() > -20:
