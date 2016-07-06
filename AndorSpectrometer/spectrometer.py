@@ -31,7 +31,7 @@ class Spectrometer:
 
         with QMutexLocker(self.lock):
             andor_initialized = andor.Initialize()
-            #time.sleep(2)
+            time.sleep(2)
             shamrock_initialized = shamrock.Initialize()
 
         if (andor_initialized > 0) and (shamrock_initialized > 0):
@@ -78,7 +78,6 @@ class Spectrometer:
 
     def __del__(self):
         if not self.closed:
-            self.lock.unlock()
             andor.Shutdown()
             shamrock.Shutdown()
         #print("Begin AndorSpectrometer.__del__")
@@ -153,7 +152,6 @@ class Spectrometer:
 
     def TakeImage(self, width, height):
         with QMutexLocker(self.lock):
-            print(andor.ERROR_CODE[andor.GetStatus()])
             andor.StartAcquisition()
             acquiring = True
             while acquiring:
@@ -161,7 +159,6 @@ class Spectrometer:
                 if status == 20073:
                     acquiring = False
                 elif not status == 20072:
-                    print(andor.ERROR_CODE[status])
                     return None
             data = andor.GetAcquiredData(width, height)
             #return data.transpose()

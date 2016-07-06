@@ -116,7 +116,7 @@ def GetNumberDevices():
     cdef int* num_ptr = &num
     error = lib.GetNumberDevices(num_ptr)
     verbose(error, "GetNumberDevices")
-    print(num)
+    return num
 
 def GetStatus():
     cdef int status = 0
