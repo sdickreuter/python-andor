@@ -15,7 +15,7 @@ device = 0
 
 def verbose(error, function=''):
     if verbosity > 0:
-        if not error is 20202:
+        if not error == 20202:
             print("[%s]: %s" % (function, ERROR_CODE[error]))
         elif verbosity > 1:
             print("[%s]: %s" % (function, ERROR_CODE[error]))

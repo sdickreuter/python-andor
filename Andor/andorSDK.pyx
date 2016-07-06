@@ -21,7 +21,7 @@ AcquistionModes = { 'Single Scan' : 1,
 
 def verbose(error, function=''):
     if verbosity > 0:
-        if not error is 20002:
+        if not error == 20002:
             print("[%s]: %s" % (function, ERROR_CODE[error]))
         elif verbosity > 1:
             print("[%s]: %s" % (function, ERROR_CODE[error]))

@@ -25,7 +25,7 @@ class Spectrometer:
         self._wl = None
         self._hstart = 100
         self._hstop = 110
-        self.exp_time = 0.2
+        self.exp_time = 1.0
         andor_initialized = 0
         shamrock_initialized = 0
 
@@ -52,7 +52,7 @@ class Spectrometer:
 
                 # //Get Detector dimensions
                 self._width, self._height = andor.GetDetector()
-                print((self._width, self._height))
+                #print((self._width, self._height))
                 self.min_width = 1
                 self.max_width = self._width
 
@@ -221,7 +221,7 @@ class Spectrometer:
 
     def TakeSingleTrack(self):
         with QMutexLocker(self.lock):
-            andor.SetExposureTime(self.exp_time)
+            #andor.SetExposureTime(self.exp_time)
             andor.StartAcquisition()
         acquiring = True
         #i = 0
