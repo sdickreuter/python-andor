@@ -222,21 +222,14 @@ class Spectrometer:
     def TakeSingleTrack(self):
         with QMutexLocker(self.lock):
             andor.StartAcquisition()
-        acquiring = True
-        while acquiring:
-            time.sleep(0.01)
-            with QMutexLocker(self.lock):
+            acquiring = True
+            while acquiring:
                 status = andor.GetStatus()
-            if status == 20073:
-                acquiring = False
-            elif not status == 20072:
-                print(andor.ERROR_CODE[status])
-                return np.zeros(self._width)
-            #if (i+1)*0.01 > self.exp_time:
-            #    print("Acquisition is taking longer than expected, exiting")
-            #    return np.zeros(self._width)
-            #i += 1
-        with QMutexLocker(self.lock):
+                if status == 20073:
+                    acquiring = False
+                elif not status == 20072:
+                    print(andor.ERROR_CODE[status])
+                    return np.zeros(self._width)
             data = andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         data = np.mean(data,1)
         return data
