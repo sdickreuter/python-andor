@@ -28,16 +28,17 @@ def verbose(error, function=''):
 
 def Shutdown():
     lib.AbortAcquisition()
-    CoolerOFF()
-
+    SetTemperature(-20)
     if GetTemperature() <= -20:
         print("Detector warming up, please wait.")
         warm = False
         while not warm:
+            time.sleep(1)
             if GetTemperature() > -20:
                 warm = True
         print("Warmup finished.")
 
+    CoolerOFF()
     error = lib.ShutDown()
     #verbose(error, sys._getframe().f_code.co_name)
 
