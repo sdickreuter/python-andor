@@ -89,6 +89,9 @@ class Spectrometer:
         shamrock.Shutdown()
         self.closed = True
 
+    def SetTemperature(self, temp):
+        andor.SetTemperature(temp)
+
     def GetTemperature(self):
         return andor.GetTemperature()
 
