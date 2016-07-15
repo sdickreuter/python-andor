@@ -76,10 +76,8 @@ def SetReadMode(mode):
     error = lib.SetReadMode(m)
     verbose(error, "SetReadMode")
 
-def SetExposureTime(seconds):
-    seconds = float(seconds)
-    cdef float s = seconds
-    error = lib.SetExposureTime(s)
+cpdef SetExposureTime(float seconds):
+    error = lib.SetExposureTime(seconds)
     verbose(error, "SetExposureTime")
     print(GetAcquisitionTimings())
 
@@ -94,22 +92,12 @@ def GetAcquisitionTimings():
     verbose(error, "GetAcquisitionTimings")
     return exposure
 
-def SetImage(hbin, vbin, hstart, hend, vstart, vend):
-    cdef int hb = hbin
-    cdef int vb = vbin
-    cdef int hs = hstart
-    cdef int he = hend
-    cdef int vs = vstart
-    cdef int ve = vend
-    error = lib.SetImage(hb, vb, hs, he, vs, ve)
+def SetImage(int hbin,int vbin,int hstart,int hend,int vstart,int vend):
+    error = lib.SetImage(hbin, vbin, hstart, hend, vstart, vend)
     verbose(error, "SetImage")
 
-def SetShutter(typ, mode, closingtime, openingtime):
-    cdef int t = typ
-    cdef int m = mode
-    cdef int ct = closingtime
-    cdef int ot = openingtime
-    error = lib.SetShutter(t, m, ct, ot)
+def SetShutter(int typ,int mode,int closingtime,int openingtime):
+    error = lib.SetShutter(typ, mode, closingtime, openingtime)
     verbose(error, "SetShutter")
 
 def StartAcquisition():
