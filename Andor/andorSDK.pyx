@@ -76,9 +76,10 @@ def SetReadMode(mode):
     error = lib.SetReadMode(m)
     verbose(error, "SetReadMode")
 
-cpdef SetExposureTime(float seconds):
+def SetExposureTime(float seconds):
     error = lib.SetExposureTime(seconds)
     verbose(error, "SetExposureTime")
+    print(error)
     print(GetAcquisitionTimings())
 
 def GetAcquisitionTimings():
@@ -149,7 +150,6 @@ def GetTECStatus():
     if (flag):
         print("ERROR: TEC has overheated !")
     verbose(error, "GetTECStatus")
-
 
 def GetTemperature():
     cdef int temp = 0

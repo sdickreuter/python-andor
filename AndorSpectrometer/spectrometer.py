@@ -120,8 +120,8 @@ class Spectrometer:
         andor.SetNumberAccumulations(number)
 
     def SetExposureTime(self, seconds):
+        andor.SetExposureTime(seconds)
         self.exp_time = seconds
-        #andor.SetExposureTime(seconds)
 
     def SetSlitWidth(self, slitwidth):
         shamrock.SetAutoSlitWidth(1, slitwidth)
@@ -137,7 +137,6 @@ class Spectrometer:
         return self.TakeImage(self._width, self._height)
 
     def TakeImage(self, width, height):
-        andor.SetExposureTime(self.exp_time)
         andor.StartAcquisition()
         acquiring = True
         while acquiring:
@@ -199,8 +198,6 @@ class Spectrometer:
         self.mode = 'SingleTrack'
 
     def TakeSingleTrack(self):
-        #andor.SetExposureTime(self.exp_time)
-        andor.SetExposureTime(0.5)
         andor.StartAcquisition()
         acquiring = True
         while acquiring:
