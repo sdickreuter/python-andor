@@ -10,6 +10,7 @@ class Spectrometer:
     cam = None
     spec = None
     closed = False
+    mode = None
 
     def __init__(self, start_cooler=False, init_shutter=False, verbosity=2):
         self.verbosity = verbosity
@@ -130,6 +131,7 @@ class Spectrometer:
 
     def SetFullImage(self):
         andor.SetImage(1, 1, 1, self._width, 1, self._height)
+        self.mode = 'Image'
 
     def TakeFullImage(self):
         return self.TakeImage(self._width, self._height)
@@ -177,6 +179,7 @@ class Spectrometer:
         self.max_width = max_width
 
         andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
+        self.mode = 'Image'
 
     def TakeImageofSlit(self):
         return self.TakeImage(self.max_width - self.min_width + 1, self._height)
@@ -192,6 +195,7 @@ class Spectrometer:
             self._hstart = hstart
             self._hstop = hstop
         andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop);
+        self.mode = 'SingleTrack'
 
     def TakeSingleTrack(self):
         andor.StartAcquisition()
