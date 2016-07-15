@@ -81,6 +81,18 @@ def SetExposureTime(seconds):
     cdef float s = seconds
     error = lib.SetExposureTime(s)
     verbose(error, "SetExposureTime")
+    print(GetAcquisitionTimings())
+
+def GetAcquisitionTimings():
+    cdef float exposure = 0
+    cdef float* exposure_ptr = &exposure
+    cdef float accumulate = 0
+    cdef float* accumulate_ptr = &accumulate
+    cdef float kinetic = 0
+    cdef float* kinetic_ptr = &kinetic
+    error = lib.GetAcquisitionTimings(exposure_ptr, accumulate_ptr, kinetic_ptr)
+    verbose(error, "GetAcquisitionTimings")
+    return exposure
 
 def SetImage(hbin, vbin, hstart, hend, vstart, vend):
     cdef int hb = hbin
@@ -155,7 +167,8 @@ def GetTemperature():
     cdef int temp = 0
     cdef int* temp_ptr = &temp
     error = lib.GetTemperature(temp_ptr)
-    verbose(error, "GetTemperature")
+    if (error != 20035) and (error != 20037):
+        verbose(error, "GetTemperature")
     return temp
 
 def GetTemperatureRange():

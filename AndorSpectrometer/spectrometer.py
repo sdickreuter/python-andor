@@ -4,9 +4,11 @@ import sys
 import Andor.andorSDK as andor
 import Shamrock.shamrockSDK as shamrock
 
+
 class Spectrometer:
     verbosity = 2
     _max_slit_width = 2500  # maximal width of slit in um
+    exp_time = 1.0
     cam = None
     spec = None
     closed = False
@@ -20,7 +22,6 @@ class Spectrometer:
         self._wl = None
         self._hstart = 100
         self._hstop = 110
-        self.exp_time = 1.0
         andor_initialized = 0
         shamrock_initialized = 0
 
@@ -35,17 +36,14 @@ class Spectrometer:
                 andor.CoolerON()
 
             # //Set Read Mode to --Image--
-            andor.SetReadMode(4);
+            andor.SetReadMode(4)
 
             # //Set Acquisition mode to --Single scan--
-            andor.SetAcquisitionMode(1);
-
-            # //Set initial exposure time
-            andor.SetExposureTime(self.exp_time);
+            andor.SetAcquisitionMode(1)
 
             # //Get Detector dimensions
             self._width, self._height = andor.GetDetector()
-            #print((self._width, self._height))
+            # print((self._width, self._height))
             self.min_width = 1
             self.max_width = self._width
 
@@ -54,7 +52,7 @@ class Spectrometer:
 
             # //Initialize Shutter
             if init_shutter:
-                andor.SetShutter(1, 0, 50, 50);
+                andor.SetShutter(1, 0, 50, 50)
 
             # //Setup Image dimensions
             andor.SetImage(1, 1, 1, self._width, 1, self._height)
@@ -65,6 +63,8 @@ class Spectrometer:
 
             shamrock.SetPixelWidth(self._pixelwidth)
 
+            # //Set initial exposure time
+            andor.SetExposureTime(self.exp_time)
         else:
             raise RuntimeError("Could not initialize Spectrometer")
             sys.exit(0)
@@ -73,17 +73,17 @@ class Spectrometer:
         if not self.closed:
             andor.Shutdown()
             shamrock.Shutdown()
-        #print("Begin AndorSpectrometer.__del__")
-        # if not self.closed:
-        #     try:
-        #         andor.Shutdown()
-        #     except (AttributeError, TypeError) as e:
-        #         print(e)
-        #     try:
-        #         shamrock.Shutdown()
-        #     except (AttributeError, TypeError) as e:
-        #         print(e)
-        #print("End AndorSpectrometer.__del__")
+            # print("Begin AndorSpectrometer.__del__")
+            # if not self.closed:
+            #     try:
+            #         andor.Shutdown()
+            #     except (AttributeError, TypeError) as e:
+            #         print(e)
+            #     try:
+            #         shamrock.Shutdown()
+            #     except (AttributeError, TypeError) as e:
+            #         print(e)
+            # print("End AndorSpectrometer.__del__")
 
     def Shutdown(self):
         andor.Shutdown()
@@ -103,8 +103,8 @@ class Spectrometer:
         num_gratings = shamrock.GetNumberGratings()
         gratings = {}
         for i in range(num_gratings):
-            lines, blaze, home, offset = shamrock.GetGratingInfo(i+1)
-            gratings[i+1] = lines
+            lines, blaze, home, offset = shamrock.GetGratingInfo(i + 1)
+            gratings[i + 1] = lines
         return gratings
 
     def GetGrating(self):
@@ -121,7 +121,7 @@ class Spectrometer:
 
     def SetExposureTime(self, seconds):
         self.exp_time = seconds
-        andor.SetExposureTime(seconds)
+        #andor.SetExposureTime(seconds)
 
     def SetSlitWidth(self, slitwidth):
         shamrock.SetAutoSlitWidth(1, slitwidth)
@@ -137,6 +137,7 @@ class Spectrometer:
         return self.TakeImage(self._width, self._height)
 
     def TakeImage(self, width, height):
+        andor.SetExposureTime(self.exp_time)
         andor.StartAcquisition()
         acquiring = True
         while acquiring:
@@ -146,7 +147,7 @@ class Spectrometer:
             elif not status == 20072:
                 return None
         data = andor.GetAcquiredData(width, height)
-        #return data.transpose()
+        # return data.transpose()
         return data
 
     def SetCentreWavelength(self, wavelength):
@@ -198,6 +199,8 @@ class Spectrometer:
         self.mode = 'SingleTrack'
 
     def TakeSingleTrack(self):
+        #andor.SetExposureTime(self.exp_time)
+        andor.SetExposureTime(0.5)
         andor.StartAcquisition()
         acquiring = True
         while acquiring:
@@ -208,5 +211,5 @@ class Spectrometer:
                 print(andor.ERROR_CODE[status])
                 return np.zeros(self._width)
         data = andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
-        data = np.mean(data,1)
+        data = np.mean(data, 1)
         return data
