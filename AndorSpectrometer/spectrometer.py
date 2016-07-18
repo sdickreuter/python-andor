@@ -158,9 +158,7 @@ class Spectrometer:
         else:
             pass
 
-    def SetImageofSlit(self):
-        shamrock.SetWavelength(0)
-
+    def CalcImageofSlitDim(self):
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
         visible_xpixels = (self._max_slit_width) / self._pixelwidth
         min_width = round(self._width / 2 - visible_xpixels / 2)
@@ -175,6 +173,13 @@ class Spectrometer:
         if max_width > self._width:
             max_width = self._width
 
+        return min_width, max_width
+
+
+    def SetImageofSlit(self):
+        shamrock.SetWavelength(0)
+
+        min_width, max_width = self.CalcImageofSlitDim()
         self.min_width = min_width
         self.max_width = max_width
 
