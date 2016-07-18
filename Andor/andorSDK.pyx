@@ -135,7 +135,8 @@ cdef class Andor:
         cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
         error = lib.GetAcquiredData(data.data.as_ints, size)
         self.verbose(error, "GetAcquiredData")
-        return np.array(data).reshape((height,width)).transpose()
+        #return np.array(data).reshape((height,width)).transpose()
+        return data
 
     def GetPixelSize(self):
         cdef float xSize = 0

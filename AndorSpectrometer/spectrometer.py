@@ -164,7 +164,7 @@ class Spectrometer:
         min_width = round(self._width / 2 - visible_xpixels / 2)
         max_width = self._width - min_width
 
-        # This two values have to be adapter if to fit the image of the slit on your detector !
+        # This two values have to be adapted if to fit the image of the slit on your detector !
         min_width -= 25
         max_width -= 5
 
