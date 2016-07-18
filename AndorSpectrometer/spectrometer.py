@@ -1,8 +1,8 @@
 import numpy as np
 import time
 import sys
-import Andor.andorSDK as andor
-import Shamrock.shamrockSDK as shamrock
+import Andor.andorSDK as Andor
+import Shamrock.shamrockSDK as Shamrock
 
 
 class Spectrometer:
@@ -15,9 +15,9 @@ class Spectrometer:
     mode = None
 
     def __init__(self, start_cooler=False, init_shutter=False, verbosity=2):
-        self.verbosity = verbosity
-        andor.verbosity = self.verbosity
-        shamrock.verbosity = self.verbosity
+
+        self.andor = Andor.Andor(verbosity)
+        self.shamrock = Shamrock.Shamrock(verbosity)
 
         self._wl = None
         self._hstart = 100
@@ -25,54 +25,54 @@ class Spectrometer:
         andor_initialized = 0
         shamrock_initialized = 0
 
-        andor_initialized = andor.Initialize()
+        andor_initialized = self.andor.Initialize()
         time.sleep(2)
-        shamrock_initialized = shamrock.Initialize()
+        shamrock_initialized = self.shamrock.Initialize()
 
         if (andor_initialized > 0) and (shamrock_initialized > 0):
 
-            andor.SetTemperature(-15)
+            self.andor.SetTemperature(-15)
             if start_cooler:
-                andor.CoolerON()
+                self.andor.CoolerON()
 
             # //Set Read Mode to --Image--
-            andor.SetReadMode(4)
+            self.andor.SetReadMode(4)
 
             # //Set Acquisition mode to --Single scan--
-            andor.SetAcquisitionMode(1)
+            self.andor.SetAcquisitionMode(1)
 
             # //Get Detector dimensions
-            self._width, self._height = andor.GetDetector()
+            self._width, self._height = self.andor.GetDetector()
             # print((self._width, self._height))
             self.min_width = 1
             self.max_width = self._width
 
             # Get Size of Pixels
-            self._pixelwidth, self._pixelheight = andor.GetPixelSize()
+            self._pixelwidth, self._pixelheight = self.andor.GetPixelSize()
 
             # //Initialize Shutter
             if init_shutter:
-                andor.SetShutter(1, 0, 50, 50)
+                self.andor.SetShutter(1, 0, 50, 50)
 
             # //Setup Image dimensions
-            andor.SetImage(1, 1, 1, self._width, 1, self._height)
+            self.andor.SetImage(1, 1, 1, self._width, 1, self._height)
 
             # shamrock = ShamrockSDK()
 
-            shamrock.SetNumberPixels(self._width)
+            self.shamrock.SetNumberPixels(self._width)
 
-            shamrock.SetPixelWidth(self._pixelwidth)
+            self.shamrock.SetPixelWidth(self._pixelwidth)
 
             # //Set initial exposure time
-            andor.SetExposureTime(self.exp_time)
+            self.andor.SetExposureTime(self.exp_time)
         else:
             raise RuntimeError("Could not initialize Spectrometer")
             sys.exit(0)
 
     def __del__(self):
         if not self.closed:
-            andor.Shutdown()
-            shamrock.Shutdown()
+            self.andor.Shutdown()
+            self.shamrock.Shutdown()
             # print("Begin AndorSpectrometer.__del__")
             # if not self.closed:
             #     try:
@@ -86,75 +86,75 @@ class Spectrometer:
             # print("End AndorSpectrometer.__del__")
 
     def Shutdown(self):
-        andor.Shutdown()
-        shamrock.Shutdown()
+        self.andor.Shutdown()
+        self.shamrock.Shutdown()
         self.closed = True
 
     def SetTemperature(self, temp):
-        andor.SetTemperature(temp)
+        self.andor.SetTemperature(temp)
 
     def GetTemperature(self):
-        return andor.GetTemperature()
+        return self.andor.GetTemperature()
 
     def GetSlitWidth(self):
-        return shamrock.GetAutoSlitWidth(1)
+        return self.shamrock.GetAutoSlitWidth(1)
 
     def GetGratingInfo(self):
-        num_gratings = shamrock.GetNumberGratings()
+        num_gratings = self.shamrock.GetNumberGratings()
         gratings = {}
         for i in range(num_gratings):
-            lines, blaze, home, offset = shamrock.GetGratingInfo(i + 1)
+            lines, blaze, home, offset = self.shamrock.GetGratingInfo(i + 1)
             gratings[i + 1] = lines
         return gratings
 
     def GetGrating(self):
-        return shamrock.GetGrating()
+        return self.shamrock.GetGrating()
 
     def SetGrating(self, grating):
-        return shamrock.SetGrating(grating)
+        return self.shamrock.SetGrating(grating)
 
     def AbortAcquisition(self):
-        andor.AbortAcquisition()
+        self.andor.AbortAcquisition()
 
     def SetNumberAccumulations(self, number):
-        andor.SetNumberAccumulations(number)
+        self.andor.SetNumberAccumulations(number)
 
     def SetExposureTime(self, seconds):
-        andor.SetExposureTime(seconds)
+        self.andor.SetExposureTime(seconds)
         self.exp_time = seconds
 
     def SetSlitWidth(self, slitwidth):
-        shamrock.SetAutoSlitWidth(1, slitwidth)
+        self.shamrock.SetAutoSlitWidth(1, slitwidth)
 
     def GetWavelength(self):
         return self._wl
 
     def SetFullImage(self):
-        andor.SetImage(1, 1, 1, self._width, 1, self._height)
+        self.andor.SetImage(1, 1, 1, self._width, 1, self._height)
         self.mode = 'Image'
 
     def TakeFullImage(self):
         return self.TakeImage(self._width, self._height)
 
     def TakeImage(self, width, height):
-        andor.StartAcquisition()
+        self.andor.StartAcquisition()
         acquiring = True
         while acquiring:
-            status = andor.GetStatus()
+            status = self.andor.GetStatus()
             if status == 20073:
                 acquiring = False
             elif not status == 20072:
                 return None
-        data = andor.GetAcquiredData(width, height)
+        data = self.andor.GetAcquiredData(width, height)
         # return data.transpose()
         return data
 
     def SetCentreWavelength(self, wavelength):
-        minwl, maxwl = shamrock.GetWavelengthLimits(shamrock.GetGrating())
+        minwl, maxwl = self.shamrock.GetWavelengthLimits(self.shamrock.GetGrating())
 
         if (wavelength < maxwl) and (wavelength > minwl):
-            shamrock.SetWavelength(wavelength)
-            self._wl = shamrock.GetCalibration(self._width)
+            self.shamrock.SetWavelength(wavelength)
+            self._wl = self.shamrock.GetCalibration(self._width)
         else:
             pass
 
@@ -177,13 +177,13 @@ class Spectrometer:
 
 
     def SetImageofSlit(self):
-        shamrock.SetWavelength(0)
+        self.shamrock.SetWavelength(0)
 
         min_width, max_width = self.CalcImageofSlitDim()
         self.min_width = min_width
         self.max_width = max_width
 
-        andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
+        self.andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
         self.mode = 'Image'
 
     def TakeImageofSlit(self):
@@ -191,7 +191,7 @@ class Spectrometer:
 
     def SetSingleTrack(self, hstart=None, hstop=None):
         if (hstart is None) or (hstop is None):
-            slitwidth = shamrock.GetAutoSlitWidth(1)
+            slitwidth = self.shamrock.GetAutoSlitWidth(1)
             pixels = (slitwidth / self._pixelheight)
             middle = self._height / 2
             self._hstart = round(middle - pixels / 2)
@@ -199,19 +199,19 @@ class Spectrometer:
         else:
             self._hstart = hstart
             self._hstop = hstop
-        andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop);
+        self.andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop);
         self.mode = 'SingleTrack'
 
     def TakeSingleTrack(self):
-        andor.StartAcquisition()
+        self.andor.StartAcquisition()
         acquiring = True
         while acquiring:
-            status = andor.GetStatus()
+            status = self.andor.GetStatus()
             if status == 20073:
                 acquiring = False
             elif not status == 20072:
-                print(andor.ERROR_CODE[status])
+                print(self.andor.ERROR_CODE[status])
                 return np.zeros(self._width)
-        data = andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
+        data = self.andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         data = np.mean(data, 1)
         return data

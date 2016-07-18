@@ -11,7 +11,7 @@ import array
 import time
 
 
-cdef class Andor:
+class Andor:
 
     verbosity = 2
     _init_path = '/usr/local/etc/andor'
@@ -21,6 +21,10 @@ cdef class Andor:
                         'Kinetics' : 3,
                         'Fast Kinetics' : 4,
                         'Run till abort' : 5}
+
+    def __init__(self, verbosity=2):
+        self.verbosity = verbosity
+
 
     def verbose(self, error, function=''):
         if self.verbosity > 0:
@@ -41,7 +45,7 @@ cdef class Andor:
                     warm = True
             print("Warmup finished.")
 
-        self.CoolerOFF(self)
+        self.CoolerOFF()
         error = lib.ShutDown()
         #verbose(error, sys._getframe().f_code.co_name)
 
@@ -94,7 +98,7 @@ cdef class Andor:
         cdef float* kinetic_ptr = &kinetic
         error = lib.GetAcquisitionTimings(exposure_ptr, accumulate_ptr, kinetic_ptr)
         self.verbose(error, "GetAcquisitionTimings")
-        return exposure
+        return exposure, accumulate, kinetic
 
     def SetImage(self, int hbin,int vbin,int hstart,int hend,int vstart,int vend):
         error = lib.SetImage(hbin, vbin, hstart, hend, vstart, vend)

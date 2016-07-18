@@ -10,11 +10,15 @@ from cpython cimport array
 import array
 
 
-cdef class Shamrock:
+class Shamrock:
 
     verbosity = 2
     init_path = '/usr/local/etc/andor'
     device = 0
+
+    def __init__(self, verbosity=2):
+        self.verbosity = verbosity
+
 
     def verbose(self, error, function=''):
         if self.verbosity > 0:
