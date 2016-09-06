@@ -86,8 +86,8 @@ class Andor:
     def SetExposureTime(self, float seconds):
         error = lib.SetExposureTime(seconds)
         self.verbose(error, "SetExposureTime")
-        print(error)
-        print(self.GetAcquisitionTimings())
+        #print(error)
+        #print(self.GetAcquisitionTimings())
 
     def GetAcquisitionTimings(self):
         cdef float exposure = 0
@@ -139,8 +139,8 @@ class Andor:
         cdef array.array data = array.array('i', np.zeros(size,dtype=np.int))
         error = lib.GetAcquiredData(data.data.as_ints, size)
         self.verbose(error, "GetAcquiredData")
-        #return np.array(data).reshape((height,width)).transpose()
-        return data
+        return np.array(data).reshape((height,width)).transpose()
+        #return data
 
     def GetPixelSize(self):
         cdef float xSize = 0
@@ -163,7 +163,7 @@ class Andor:
         cdef int temp = 0
         cdef int* temp_ptr = &temp
         error = lib.GetTemperature(temp_ptr)
-        if (error != 20035) and (error != 20037):
+        if (error != 20035) and (error != 20037) and (error != 20036):
             self.verbose(error, "GetTemperature")
         return temp
 

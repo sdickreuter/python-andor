@@ -111,7 +111,9 @@ class Spectrometer:
         return self.shamrock.GetGrating()
 
     def SetGrating(self, grating):
-        return self.shamrock.SetGrating(grating)
+        status = self.shamrock.SetGrating(grating)
+        self._wl = self.shamrock.GetCalibration(self._width)
+        return status
 
     def AbortAcquisition(self):
         self.andor.AbortAcquisition()
@@ -183,7 +185,7 @@ class Spectrometer:
         self.min_width = min_width
         self.max_width = max_width
 
-        self.andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height);
+        self.andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height)
         self.mode = 'Image'
 
     def TakeImageofSlit(self):
@@ -199,7 +201,7 @@ class Spectrometer:
         else:
             self._hstart = hstart
             self._hstop = hstop
-        self.andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop);
+        self.andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop)
         self.mode = 'SingleTrack'
 
     def TakeSingleTrack(self):
@@ -210,7 +212,7 @@ class Spectrometer:
             if status == 20073:
                 acquiring = False
             elif not status == 20072:
-                print(self.andor.ERROR_CODE[status])
+                print(Andor.ERROR_CODE[status])
                 return np.zeros(self._width)
         data = self.andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         data = np.mean(data, 1)
