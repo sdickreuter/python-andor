@@ -127,6 +127,7 @@ class Spectrometer:
 
     def SetSlitWidth(self, slitwidth):
         self.shamrock.SetAutoSlitWidth(1, slitwidth)
+        self.CalcSingleTrackSlitPixels()
 
     def GetWavelength(self):
         return self._wl
@@ -191,13 +192,20 @@ class Spectrometer:
     def TakeImageofSlit(self):
         return self.TakeImage(self.max_width - self.min_width + 1, self._height)
 
+
+    def CalcSingleTrackSlitPixels(self):
+        slitwidth = self.shamrock.GetAutoSlitWidth(1)
+        pixels = (slitwidth / self._pixelheight)
+        middle = self._height / 2
+        self._hstart = round(middle - pixels / 2)
+        self._hstop = round(middle + pixels / 2)
+        print("slitwidth: " + str(slitwidth))
+        print("readout pixels: " + str(pixels))
+
+
     def SetSingleTrack(self, hstart=None, hstop=None):
         if (hstart is None) or (hstop is None):
-            slitwidth = self.shamrock.GetAutoSlitWidth(1)
-            pixels = (slitwidth / self._pixelheight)
-            middle = self._height / 2
-            self._hstart = round(middle - pixels / 2)
-            self._hstop = round(middle + pixels / 2)
+            pass
         else:
             self._hstart = hstart
             self._hstop = hstop
