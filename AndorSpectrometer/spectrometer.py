@@ -127,7 +127,11 @@ class Spectrometer:
 
     def SetSlitWidth(self, slitwidth):
         self.shamrock.SetAutoSlitWidth(1, slitwidth)
-        self.CalcSingleTrackSlitPixels()
+        if self.mode is 'Image':
+            self.andor.SetImage(1, 1, self.min_width, self.max_width, 1, self._height)
+        else:
+            self.CalcSingleTrackSlitPixels()
+            self.andor.SetImage(1, 1, 1, self._width, self._hstart, self._hstop)
 
     def GetWavelength(self):
         return self._wl
@@ -168,8 +172,8 @@ class Spectrometer:
         max_width = self._width - min_width
 
         # This two values have to be adapted if to fit the image of the slit on your detector !
-        min_width -= 25
-        max_width -= 5
+        min_width -= 45#25
+        max_width -= 15+5
 
         if min_width < 1:
             min_width = 1
@@ -199,13 +203,11 @@ class Spectrometer:
         middle = self._height / 2
         self._hstart = round(middle - pixels / 2)
         self._hstop = round(middle + pixels / 2)
-        print("slitwidth: " + str(slitwidth))
-        print("readout pixels: " + str(pixels))
 
 
     def SetSingleTrack(self, hstart=None, hstop=None):
         if (hstart is None) or (hstop is None):
-            pass
+            self.CalcSingleTrackSlitPixels()
         else:
             self._hstart = hstart
             self._hstop = hstop
