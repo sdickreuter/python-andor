@@ -173,7 +173,7 @@ class Spectrometer:
 
         # This two values have to be adapted if to fit the image of the slit on your detector !
         min_width -= 45#25
-        max_width -= 15+5
+        max_width -= 0#5
 
         if min_width < 1:
             min_width = 1
