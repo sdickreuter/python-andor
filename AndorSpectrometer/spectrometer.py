@@ -225,5 +225,5 @@ class Spectrometer:
                 print(Andor.ERROR_CODE[status])
                 return np.zeros(self._width)
         data = self.andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
-        data = np.mean(data, 1)
+        #data = np.mean(data, 1)
         return data
