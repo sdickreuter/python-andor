@@ -67,7 +67,7 @@ cdef extern from "atmcdLXd.h" :
     unsigned int EnableSensorCompensation(int iMode)
     unsigned int SetIRIGModulation(char mode)
     unsigned int FreeInternalMemory()
-    unsigned int GetAcquiredData(int *arr, unsigned int size)
+    unsigned int GetAcquiredData(long *arr, unsigned int size)
     unsigned int GetAcquiredData16(unsigned short *arr, unsigned int size)
     unsigned int GetAcquiredFloatData(float *arr, unsigned int size)
     unsigned int GetAcquisitionProgress(int *acc, int *series)
