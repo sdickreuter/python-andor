@@ -31,7 +31,7 @@ class Spectrometer:
 
         if (andor_initialized > 0) and (shamrock_initialized > 0):
 
-            self.andor.SetTemperature(-15)
+            self.andor.SetTemperature(-40)
             if start_cooler:
                 self.andor.CoolerON()
 
@@ -52,7 +52,7 @@ class Spectrometer:
 
             # //Initialize Shutter
             if init_shutter:
-                self.andor.SetShutter(1, 0, 50, 50)
+                self.andor.SetShutter(1, 0, 30, 30)
 
             # //Setup Image dimensions
             self.andor.SetImage(1, 1, 1, self._width, 1, self._height)
@@ -201,9 +201,10 @@ class Spectrometer:
         slitwidth = self.shamrock.GetAutoSlitWidth(1)
         pixels = (slitwidth / self._pixelheight)
         middle = self._height / 2
-        self._hstart = round(middle - pixels / 2)
-        self._hstop = round(middle + pixels / 2)
-
+        self._hstart = round(middle - pixels / 2)-3
+        self._hstop = round(middle + pixels / 2)+3
+        print('Detector readout:'+ str(self._hstart)+' - '+str(self._hstop)+' pixels' )
+        # the -3 and +3 are a workaround as the detector tends to saturate the first two rows, so we take these but disregard them later
 
     def SetSingleTrack(self, hstart=None, hstop=None):
         if (hstart is None) or (hstop is None):
@@ -223,7 +224,7 @@ class Spectrometer:
                 acquiring = False
             elif not status == 20072:
                 print(Andor.ERROR_CODE[status])
-                return np.zeros(self._width)
+                return np.zeros((self._width,7))
         data = self.andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         #data = np.mean(data, 1)
-        return data
+        return data[:,3:-3] # throw away 'bad rows', see CalcSingleTrackSlitPixels(self) for details
