@@ -31,7 +31,7 @@ class Spectrometer:
 
         if (andor_initialized > 0) and (shamrock_initialized > 0):
 
-            self.andor.SetTemperature(-40)
+            self.andor.SetTemperature(-15)
             if start_cooler:
                 self.andor.CoolerON()
 
