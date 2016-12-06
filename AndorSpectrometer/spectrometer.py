@@ -203,7 +203,7 @@ class Spectrometer:
         middle = self._height / 2
         self._hstart = round(middle - pixels / 2)-3
         self._hstop = round(middle + pixels / 2)+3
-        print('Detector readout:'+ str(self._hstart)+' - '+str(self._hstop)+' pixels' )
+        print('Detector readout:'+ str(self._hstart+3)+' - '+str(self._hstop-3)+' pixels' )
         # the -3 and +3 are a workaround as the detector tends to saturate the first two rows, so we take these but disregard them later
 
     def SetSingleTrack(self, hstart=None, hstop=None):
