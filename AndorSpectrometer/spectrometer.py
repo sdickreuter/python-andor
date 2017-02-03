@@ -200,6 +200,8 @@ class Spectrometer:
     def CalcSingleTrackSlitPixels(self):
         slitwidth = self.shamrock.GetAutoSlitWidth(1)
         pixels = (slitwidth / self._pixelheight)
+        if pixels < 7:  #read out a minimum of 7 pixels, this is the smallest height that could be seen on the detector, smaller values will give wrong spectra
+            pixels = 7
         middle = self._height / 2
         self._hstart = round(middle - pixels / 2)-3
         self._hstop = round(middle + pixels / 2)+3
