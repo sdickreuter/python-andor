@@ -172,8 +172,8 @@ class Spectrometer:
         max_width = self._width - min_width
 
         # This two values have to be adapted if to fit the image of the slit on your detector !
-        min_width -= 45#25
-        max_width -= 0#5
+        min_width -= 25#45#25
+        max_width -= -25#0#5
 
         if min_width < 1:
             min_width = 1
@@ -200,11 +200,13 @@ class Spectrometer:
     def CalcSingleTrackSlitPixels(self):
         slitwidth = self.shamrock.GetAutoSlitWidth(1)
         pixels = (slitwidth / self._pixelheight)
+        if pixels < 8:
+            pixels = 8
         middle = round(self._height / 2)
         self._hstart = round(middle - pixels / 2)
         self._hstop = round(middle + pixels / 2)+3
-        print('Detector readout:'+ str(self._hstart)+' - '+str(self._hstop-3)+' pixels, middle at '+str(middle) )
-        # the -3 and +3 are a workaround as the detector tends to saturate the first two rows, so we take these but disregard them later
+        print('Detector readout:'+ str(self._hstart)+' - '+str(self._hstop)+' pixels, middle at '+str(middle)+', throwing away '+str(self._hstop-3)+'-'+str(self._hstop) )
+        # the -3 is a workaround as the detector tends to saturate the first two rows, so we take these but disregard them later
 
     def SetSingleTrack(self, hstart=None, hstop=None):
         if (hstart is None) or (hstop is None):
@@ -227,4 +229,5 @@ class Spectrometer:
                 return np.zeros((self._width,7))
         data = self.andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         #data = np.mean(data, 1)
-        return data[:,3:] # throw away 'bad rows', see CalcSingleTrackSlitPixels(self) for details
+        return data[:, 3:]  # throw away 'bad rows', see CalcSingleTrackSlitPixels(self) for details
+        #return data
