@@ -13,6 +13,7 @@ class Spectrometer:
     spec = None
     closed = False
     mode = None
+    single_track_minimum_vertical_pixels = 0
 
     def __init__(self, start_cooler=False, init_shutter=False, verbosity=2):
 
@@ -196,12 +197,14 @@ class Spectrometer:
     def TakeImageofSlit(self):
         return self.TakeImage(self.max_width - self.min_width + 1, self._height)
 
+    def set_single_track_minimum_vertical_pixels(self,pixels):
+        self.single_track_minimum_vertical_pixels = pixels
 
     def CalcSingleTrackSlitPixels(self):
         slitwidth = self.shamrock.GetAutoSlitWidth(1)
         pixels = (slitwidth / self._pixelheight)
-        if pixels < 7:  #read out a minimum of 7 pixels, this is the smallest height that could be seen on the detector, smaller values will give wrong spectra
-            pixels = 7
+        if pixels < self.single_track_minimum_vertical_pixels:  #read out a minimum of 7 pixels, this is the smallest height that could be seen on the detector, smaller values will give wrong spectra due to chromatic abberation
+            pixels = self.single_track_minimum_vertical_pixels
         middle = self._height / 2
         self._hstart = round(middle - pixels / 2)-3
         self._hstop = round(middle + pixels / 2)+3
