@@ -159,12 +159,15 @@ class Spectrometer:
 
     def SetCentreWavelength(self, wavelength):
         minwl, maxwl = self.shamrock.GetWavelengthLimits(self.shamrock.GetGrating())
-
+        # if (wavelength < maxwl) and (wavelength > minwl):
+        #     self.shamrock.SetWavelength(wavelength)
+        #     self._wl = self.shamrock.GetCalibration(self._width)
+        # else:
+        #     pass
+        self.shamrock.SetWavelength(wavelength)
         if (wavelength < maxwl) and (wavelength > minwl):
-            self.shamrock.SetWavelength(wavelength)
             self._wl = self.shamrock.GetCalibration(self._width)
-        else:
-            pass
+            print("You set the centre wavelength outside the usable range, wavelengths will be invalid")
 
     def CalcImageofSlitDim(self):
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
@@ -197,7 +200,7 @@ class Spectrometer:
     def TakeImageofSlit(self):
         return self.TakeImage(self.max_width - self.min_width + 1, self._height)
 
-    def set_single_track_minimum_vertical_pixels(self,pixels):
+    def SetSingleTrackMinimumVerticalPixels(self,pixels):
         self.single_track_minimum_vertical_pixels = pixels
 
     def CalcSingleTrackSlitPixels(self):
