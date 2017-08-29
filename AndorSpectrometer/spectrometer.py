@@ -21,8 +21,8 @@ class Spectrometer:
         self.shamrock = Shamrock.Shamrock(verbosity)
 
         self._wl = None
-        self._hstart = 100
-        self._hstop = 110
+        self._hstart = 128-5
+        self._hstop = 128+5
         andor_initialized = 0
         shamrock_initialized = 0
 
@@ -165,7 +165,7 @@ class Spectrometer:
         # else:
         #     pass
         self.shamrock.SetWavelength(wavelength)
-        if (wavelength < maxwl) and (wavelength > minwl):
+        if (wavelength > maxwl) and (wavelength < minwl):
             self._wl = self.shamrock.GetCalibration(self._width)
             print("You set the centre wavelength outside the usable range, wavelengths will be invalid")
 
@@ -235,5 +235,7 @@ class Spectrometer:
                 return np.zeros((self._width,7))
         data = self.andor.GetAcquiredData(self._width, (self._hstop - self._hstart) + 1)
         #data = np.mean(data, 1)
-        return data[:, 3:]  # throw away 'bad rows', see CalcSingleTrackSlitPixels(self) for details
-        #return data
+        data = data[:, 3:]  # throw away 'bad rows', see CalcSingleTrackSlitPixels(self) for details
+        print('Acquired Data: '+ str(data.shape))
+        #return data[:, 3:]  # throw away 'bad rows', see CalcSingleTrackSlitPixels(self) for details
+        return data
