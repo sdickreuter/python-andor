@@ -108,6 +108,18 @@ class Andor:
         error = lib.SetShutter(typ, mode, closingtime, openingtime)
         self.verbose(error, "SetShutter")
 
+
+    def SetHSSpeed(self,int index):
+        cdef int typ = 0
+        #unsigned int WINAPI SetHSSpeed(int typ, int index)
+        error = lib.SetHSSpeed(typ, index)
+        self.verbose(error, "SetHSSpeed")
+
+    def SetVSSpeed(self, int index):
+        #unsigned int WINAPI SetVSSpeed(int index)
+        error = lib.SetVSSpeed(index)
+        self.verbose(error, "SetVSSpeed")
+
     def StartAcquisition(self):
         #status = GetStatus()
         #if status == 20073: # 20073: 'DRV_IDLE'
@@ -126,6 +138,28 @@ class Andor:
         error = lib.GetNumberDevices(num_ptr)
         self.verbose(error, "GetNumberDevices")
         return num
+
+    def GetNumberHSSpeeds(self):
+        cdef int channel = 0
+        cdef int typ = 0
+        cdef int speeds = -1
+        cdef int* speeds_ptr = &speeds
+        #unsigned int WINAPI GetNumberHSSpeeds(int channel, int typ, int* speeds)
+        error = lib.GetNumberHSSpeeds(channel, typ,speeds_ptr)
+        self.verbose(error, "GetNumberHSSpeeds")
+        return speeds
+
+    def GetFastestRecommendedVSSpeed(self):
+        cdef int index = -1
+        cdef int* index_ptr = &index
+        cdef float speed = 0
+        cdef float* speed_ptr = &speed
+        #unsigned int WINAPI GetFastestRecommendedVSSpeed (int* index, float* speed)
+        error = lib.GetFastestRecommendedVSSpeed(index_ptr, speed_ptr)
+        self.verbose(error, "GetNumberHSSpeeds")
+        print("Fastest recommended vertical shift speed: "+str(speed))
+        return index
+
 
     def GetStatus(self):
         cdef int status = 0
