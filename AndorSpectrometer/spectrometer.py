@@ -67,13 +67,15 @@ class Spectrometer:
             # //Set initial exposure time
             self.andor.SetExposureTime(self.exp_time)
 
-
+            self.HSSpeeds = self.andor.GetHSSpeedList()
+            print("HSSpeeds available: "+str(self.HSSpeeds))
             # set HSSpeed to 100Mhz
             self.andor.SetHSSpeed(2)
 
             # set vertical Speed to fastest recommended
             index = self.andor.GetFastestRecommendedVSSpeed()
             self.andor.SetVSSpeed(index)
+
 
         else:
             raise RuntimeError("Could not initialize Spectrometer")

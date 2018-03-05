@@ -149,6 +149,24 @@ class Andor:
         self.verbose(error, "GetNumberHSSpeeds")
         return speeds
 
+
+    def GetHSSpeed(self, int index):
+        cdef int channel = 0
+        cdef int typ = 0
+        cdef int speed = -1
+        cdef int* speed_ptr = &speed
+        #unsigned int WINAPI GetHSSpeed(int channel, int typ, int index, float* speed)
+        error = lib.GetHSSpeed(channel, typ, index,speed_ptr)
+        self.verbose(error, "GetHSSpeed")
+        return speed
+
+    def GetHSSpeedList(self):
+        n = self.GetNumberHSSpeeds()
+        speeds = []
+        for i in range(n):
+            speeds.append(self.GetHSSpeed(i))
+        return speeds
+
     def GetFastestRecommendedVSSpeed(self):
         cdef int index = -1
         cdef int* index_ptr = &index
@@ -157,7 +175,7 @@ class Andor:
         #unsigned int WINAPI GetFastestRecommendedVSSpeed (int* index, float* speed)
         error = lib.GetFastestRecommendedVSSpeed(index_ptr, speed_ptr)
         self.verbose(error, "GetNumberHSSpeeds")
-        print("Fastest recommended vertical shift speed: "+str(speed))
+        print("Fastest recommended vertical shift speed: "+str(speed)+" usec")
         return index
 
 
