@@ -55,6 +55,8 @@ class Spectrometer:
             if init_shutter:
                 self.andor.SetShutter(1, 0, 30, 30)
 
+            self._wl = self.shamrock.GetCalibration(self._width)
+
             # //Setup Image dimensions
             self.andor.SetImage(1, 1, 1, self._width, 1, self._height)
 
@@ -70,7 +72,7 @@ class Spectrometer:
             self.HSSpeeds = self.andor.GetHSSpeedList()
             print("HSSpeeds available: "+str(self.HSSpeeds))
             # set HSSpeed to 100Mhz
-            self.andor.SetHSSpeed(2)
+            self.andor.SetHSSpeed(0)
 
             # set vertical Speed to fastest recommended
             index = self.andor.GetFastestRecommendedVSSpeed()
@@ -176,8 +178,8 @@ class Spectrometer:
         # else:
         #     pass
         self.shamrock.SetWavelength(wavelength)
-        if (wavelength > maxwl) and (wavelength < minwl):
-            self._wl = self.shamrock.GetCalibration(self._width)
+        self._wl = self.shamrock.GetCalibration(self._width)
+        if (wavelength > maxwl) or (wavelength < minwl):
             print("You set the centre wavelength outside the usable range, wavelengths will be invalid")
 
     def CalcImageofSlitDim(self):

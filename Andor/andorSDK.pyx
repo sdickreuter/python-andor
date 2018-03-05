@@ -153,8 +153,8 @@ class Andor:
     def GetHSSpeed(self, int index):
         cdef int channel = 0
         cdef int typ = 0
-        cdef int speed = -1
-        cdef int* speed_ptr = &speed
+        cdef float speed = -1
+        cdef float* speed_ptr = &speed
         #unsigned int WINAPI GetHSSpeed(int channel, int typ, int index, float* speed)
         error = lib.GetHSSpeed(channel, typ, index,speed_ptr)
         self.verbose(error, "GetHSSpeed")

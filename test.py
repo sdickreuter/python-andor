@@ -17,7 +17,7 @@ spec.SetSlitWidth(100)
 #
 #
 spec.SetSingleTrack()
-spec.SetExposureTime(0.1)
+spec.SetExposureTime(5.0)
 d = spec.TakeSingleTrack()
 spec.SetExposureTime(1)
 d2 = spec.TakeSingleTrack()
