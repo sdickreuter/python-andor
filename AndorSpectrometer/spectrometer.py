@@ -132,13 +132,13 @@ class Spectrometer:
     def SetDetectorOffset(self, offset):
         self.shamrock.SetDetectorOffset(offset)
 
-    def GetDetectorOffset(self, offset):
+    def GetDetectorOffset(self):
         return self.shamrock.GetDetectorOffset()
 
     def SetGratingOffset(self, offset):
         self.shamrock.SetGratingOffset(self.shamrock.GetGrating(), offset)
 
-    def GetGratingOffset(self, offset):
+    def GetGratingOffset(self):
         return self.shamrock.GetGratingOffset(self.shamrock.GetGrating())
 
     def AbortAcquisition(self):
