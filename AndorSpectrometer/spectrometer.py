@@ -129,6 +129,18 @@ class Spectrometer:
         self._wl = self.shamrock.GetCalibration(self._width)
         return status
 
+    def SetDetectorOffset(self, offset):
+        self.shamrock.SetDetectorOffset(offset)
+
+    def GetDetectorOffset(self, offset):
+        return self.shamrock.GetDetectorOffset()
+
+    def SetGratingOffset(self, offset):
+        self.shamrock.SetGratingOffset(self.shamrock.GetGrating(), offset)
+
+    def GetGratingOffset(self, offset):
+        return self.shamrock.GetGratingOffset(self.shamrock.GetGrating())
+
     def AbortAcquisition(self):
         self.andor.AbortAcquisition()
 

@@ -150,14 +150,31 @@ class Shamrock:
         return w # w in um !
 
 
-    def GetDetectorOffset(self, int offset):
-        cdef float w = 0
-        cdef float* w_ptr = &w
-        error = lib.ShamrockGetAutoSlitWidth(self.device, offset, w_ptr)
-        self.verbose(error, "GetAutoSlitWidth")
-        return w # w in um !
+    #unsigned int ShamrockGetDetectorOffset(int device,int *offset)
+    def GetDetectorOffset(self):
+        cdef int offset = 0
+        cdef int* offset_ptr = &offset
+        error = lib.ShamrockGetDetectorOffset(self.device, offset_ptr)
+        self.verbose(error, "GetDetectorOffset")
+        return offset
 
-    unsigned int ShamrockSetDetectorOffset(int device,int offset)
-    unsigned int ShamrockGetDetectorOffset(int device,int *offset)
-    unsigned int ShamrockSetGratingOffset(int device,int Grating, int offset)
-    unsigned int ShamrockGetGratingOffset(int device,int Grating, int *offset)
+    #unsigned int ShamrockSetDetectorOffset(int device,int offset)
+    def SetDetectorOffset(self, int offset):
+        error = lib.ShamrockSetDetectorOffset(self.device, offset)
+        self.verbose(error, "SetDetectorOffset")
+
+    #unsigned int ShamrockGetGratingOffset(int device,int Grating, int *offset)
+    def GetGratingOffset(self, int grating):
+        cdef int offset = 0
+        cdef int* offset_ptr = &offset
+        error = lib.ShamrockGetGratingOffset(self.device, grating, offset_ptr)
+        self.verbose(error, "GetGratingOffset")
+        return offset
+
+    #unsigned int ShamrockSetGratingOffset(int device,int Grating, int offset)
+    def SetGratingOffset(self,int grating, int offset):
+        error = lib.ShamrockSetGratingOffset(self.device, grating, offset)
+        self.verbose(error, "SetGratingOffset")
+
+
+
