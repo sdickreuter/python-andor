@@ -150,3 +150,14 @@ class Shamrock:
         return w # w in um !
 
 
+    def GetDetectorOffset(self, int offset):
+        cdef float w = 0
+        cdef float* w_ptr = &w
+        error = lib.ShamrockGetAutoSlitWidth(self.device, offset, w_ptr)
+        self.verbose(error, "GetAutoSlitWidth")
+        return w # w in um !
+
+    unsigned int ShamrockSetDetectorOffset(int device,int offset)
+    unsigned int ShamrockGetDetectorOffset(int device,int *offset)
+    unsigned int ShamrockSetGratingOffset(int device,int Grating, int offset)
+    unsigned int ShamrockGetGratingOffset(int device,int Grating, int *offset)

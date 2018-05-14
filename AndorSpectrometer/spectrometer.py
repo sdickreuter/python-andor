@@ -53,7 +53,7 @@ class Spectrometer:
 
             # //Initialize Shutter
             if init_shutter:
-                self.andor.SetShutter(1, 0, 30, 30)
+                self.andor.SetShutter(1, 0, 50, 50)
 
             self._wl = self.shamrock.GetCalibration(self._width)
 
