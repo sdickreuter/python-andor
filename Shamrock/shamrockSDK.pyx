@@ -184,6 +184,6 @@ class Shamrock:
     def AtZeroOrder(self):
         cdef int atZeroOrder = 0
         cdef int* atZeroOrder_ptr = &atZeroOrder
-        error = lib.ShamrockGotoZeroOrder(self.device, atZeroOrder_ptr)
+        error = lib.ShamrockAtZeroOrder(self.device, atZeroOrder_ptr)
         self.verbose(error, "AtZeroOrder")
         return atZeroOrder
