@@ -189,10 +189,15 @@ class Spectrometer:
         #     self._wl = self.shamrock.GetCalibration(self._width)
         # else:
         #     pass
-        self.shamrock.SetWavelength(wavelength)
-        self._wl = self.shamrock.GetCalibration(self._width)
-        if (wavelength > maxwl) or (wavelength < minwl):
-            print("You set the centre wavelength outside the usable range, wavelengths will be invalid")
+        if wavelength < 2:
+            self.shamrock.GotoZeroOrder()
+            if not self.shamrock.AtZeroOrder():
+                print("ERROR: Did not reach zero order!")
+        else:
+            self.shamrock.SetWavelength(wavelength)
+            self._wl = self.shamrock.GetCalibration(self._width)
+            if (wavelength > maxwl) or (wavelength < minwl):
+                print("You set the centre wavelength outside the usable range, wavelengths will be invalid")
 
     def CalcImageofSlitDim(self):
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
@@ -236,7 +241,7 @@ class Spectrometer:
         middle = round(self._height / 2)
         self._hstart = round(middle - pixels / 2)
         self._hstop = round(middle + pixels / 2)+3
-        print('Detector readout:'+ str(self._hstart)+' - '+str(self._hstop)+' pixels, middle at '+str(middle)+', throwing away '+str(self._hstop-3)+'-'+str(self._hstop) )
+        print('Detector readout:'+ str(self._hstart)+' - '+str(self._hstop-3)+' pixels, middle at '+str(middle)+', throwing away '+str(self._hstop-3)+'-'+str(self._hstop) )
         # the -3 is a workaround as the detector tends to saturate the first two rows, so we take these but disregard them later
 
     def SetSingleTrack(self, hstart=None, hstop=None):
