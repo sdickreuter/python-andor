@@ -177,4 +177,13 @@ class Shamrock:
         self.verbose(error, "SetGratingOffset")
 
 
+    def GotoZeroOrder(self):
+        error = lib.ShamrockGotoZeroOrder(self.device)
+        self.verbose(error, "GotoZeroOrder")
 
+    def AtZeroOrder(self):
+        cdef int atZeroOrder = 0
+        cdef int* atZeroOrder_ptr = &atZeroOrder
+        error = lib.ShamrockGotoZeroOrder(self.device, atZeroOrder_ptr)
+        self.verbose(error, "AtZeroOrder")
+        return atZeroOrder
