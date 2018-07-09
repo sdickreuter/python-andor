@@ -210,7 +210,7 @@ class Spectrometer:
 
         # This two values have to be adapted if to fit the image of the slit on your detector !
         min_width -= extraborder#45#25
-        max_width += -extraborder#0#5
+        max_width += extraborder#0#5
 
         if min_width < 1:
             min_width = 1
