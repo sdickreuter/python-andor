@@ -1,4 +1,5 @@
 from setuptools import setup, Extension
+import numpy
 
 # from distutils.core import setup
 #from distutils.extension import Extension
@@ -48,8 +49,9 @@ setup(name='Andor',
       #  Extension("Shamrock.shamrockSDK", ["Shamrock/c_shamrockSDK.c","Shamrock/shamrockSDK.pyx"],
       #         libraries=['shamrockcif'])
       Extension("Andor.andorSDK", ["Andor/andorSDK.pyx"],
-                libraries=['andor']),
+                libraries=['andor'],include_dirs=[numpy.get_include()]),
       Extension("Shamrock.shamrockSDK", ["Shamrock/shamrockSDK.pyx"],
-                libraries=['shamrockcif'])
-      ]
+                libraries=['shamrockcif'],include_dirs=[numpy.get_include()]),
+      ],
+      include_dirs=[numpy.get_include()]
 )

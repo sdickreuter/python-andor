@@ -189,12 +189,15 @@ class Spectrometer:
         #     self._wl = self.shamrock.GetCalibration(self._width)
         # else:
         #     pass
-        if wavelength < 2:
+        if wavelength < 10:
             self.shamrock.GotoZeroOrder()
+            time.sleep(0.3)
+            self.shamrock.GetCalibration(self._width)
             if not self.shamrock.AtZeroOrder():
                 print("ERROR: Did not reach zero order!")
         else:
             self.shamrock.SetWavelength(wavelength)
+            time.sleep(0.3)
             self._wl = self.shamrock.GetCalibration(self._width)
             if (wavelength > maxwl) or (wavelength < minwl):
                 print("You set the centre wavelength outside the usable range, wavelengths will be invalid")
@@ -203,17 +206,18 @@ class Spectrometer:
         # Calculate which pixels in x direction are acutally illuminated (usually the slit will be much smaller than the ccd)
         visible_xpixels = (self._max_slit_width) / self._pixelwidth
         min_width = round(self._width / 2 - visible_xpixels / 2)
-        max_width = self._width - min_width
+        max_width = round(self._width / 2 + visible_xpixels / 2)
 
         # This two values have to be adapted if to fit the image of the slit on your detector !
         min_width -= 25#45#25
-        max_width -= -25#0#5
+        max_width += 25#0#5
 
         if min_width < 1:
             min_width = 1
         if max_width > self._width:
             max_width = self._width
 
+        print("Pixels for Image of Slit:" + str(min_width) + ' - ' + str(max_width))
         return min_width, max_width
 
 
