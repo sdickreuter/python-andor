@@ -35,13 +35,15 @@ class Andor:
 
     def Shutdown(self):
         lib.AbortAcquisition()
-        self.SetTemperature(-20)
-        if self.GetTemperature() <= -20:
+        self.SetTemperature(-10)
+        if self.GetTemperature() <= -10:
             print("Detector warming up, please wait.")
             warm = False
             while not warm:
                 time.sleep(1)
-                if self.GetTemperature() > -20:
+                temp = self.GetTemperature()
+                print("Detector at "+str(temp)+" °C")
+                if temp > -10:
                     warm = True
             print("Warmup finished.")
 
