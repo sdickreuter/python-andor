@@ -10,7 +10,6 @@ from cpython cimport array
 import array
 import time
 
-
 class Andor:
 
     verbosity = 2
@@ -38,14 +37,18 @@ class Andor:
         self.SetTemperature(-10)
         if self.GetTemperature() <= -10:
             print("Detector warming up, please wait.")
+            sys.stdout.flush()
             warm = False
             while not warm:
                 time.sleep(1)
                 temp = self.GetTemperature()
                 print("Detector at "+str(temp)+" °C")
+                sys.stdout.flush()
                 if temp > -10:
                     warm = True
             print("Warmup finished.")
+            sys.stdout.flush()
+
 
         self.CoolerOFF()
         error = lib.ShutDown()
